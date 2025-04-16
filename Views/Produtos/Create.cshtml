@@ -1,0 +1,78 @@
+@model MEIAdmin.Models.Produto
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Adicionar Produto";
+}
+
+<h2>Adicionar Produto</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Nome" class="control-label"></label>
+        <input asp-for="Nome" class="form-control" required />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Quantidade" class="control-label"></label>
+        <input asp-for="Quantidade" class="form-control" type="number" required />
+        <span asp-validation-for="Quantidade" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PrecoCompra" class="control-label"></label>
+        <input asp-for="PrecoCompra" class="form-control" type="number" step="0.01" required />
+        <span asp-validation-for="PrecoCompra" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MargemLucro" class="control-label"></label>
+        <input asp-for="MargemLucro" class="form-control" type="number" step="0.01" required />
+        <span asp-validation-for="MargemLucro" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DataCompra" class="control-label"></label>
+        <input asp-for="DataCompra" class="form-control" type="date" required />
+        <span asp-validation-for="DataCompra" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="UnidadeMedida" class="control-label"></label>
+        <input asp-for="UnidadeMedida" class="form-control" required />
+        <span asp-validation-for="UnidadeMedida" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Categoria" class="control-label"></label>
+        <input asp-for="Categoria" class="form-control" required />
+        <span asp-validation-for="Categoria" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="UsadoInternamente" class="control-label"></label>
+        <input asp-for="UsadoInternamente" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Fornecedores (Opcional)</label>
+        <select name="FornecedorIds" class="form-control" asp-items="ViewBag.Fornecedores">
+            <option value="">Selecione um fornecedor</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Salvar" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Voltar para a lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

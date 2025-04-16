@@ -1,0 +1,29 @@
+﻿@model IEnumerable<MEIAdmin.Models.ViewModels.RelatorioProdutosEmEstoqueViewModel>
+
+@{
+    ViewData["Title"] = "Relatório de Produtos em Estoque";
+}
+
+<h2>Relatório de Produtos em Estoque</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome do Produto</th>
+            <th>Quantidade em Estoque</th>
+            <th>Unidade de Medida</th>
+            <th>Data da Compra</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var produto in Model)
+        {
+            <tr>
+                <td>@produto.NomeProduto</td>
+                <td>@produto.Quantidade</td>
+                <td>@produto.UnidadeMedida</td>
+                <td>@produto.DataCompra.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

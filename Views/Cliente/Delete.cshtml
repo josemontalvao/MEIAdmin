@@ -1,0 +1,24 @@
+@model MEIAdmin.Models.Cliente
+
+@{
+    ViewData["Title"] = "Excluir Cliente";
+}
+
+<h2>@ViewData["Title"]</h2>
+<h4>Tem certeza que deseja excluir este cliente?</h4>
+
+<div>
+    <strong>Nome:</strong> @Model.RazaoSocial
+</div>
+<div>
+    <strong>Email:</strong> @Model.Contato
+</div>
+<div>
+    <strong>Telefone:</strong> @Model.Telefone
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger mt-3">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Cancelar</a>
+</form>

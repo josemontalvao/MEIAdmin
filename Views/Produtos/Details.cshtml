@@ -1,0 +1,50 @@
+﻿@model MEIAdmin.Models.Produto
+
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<h2>Detalhes do Produto</h2>
+
+<div>
+    <h4>@Model.Nome</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Quantidade</dt>
+        <dd class="col-sm-10">@Model.Quantidade</dd>
+
+        <dt class="col-sm-2">Preço de Compra</dt>
+        <dd class="col-sm-10">@Model.PrecoCompra.ToString("C")</dd>
+
+        <dt class="col-sm-2">Preço de Venda</dt>
+        <dd class="col-sm-10">@Model.PrecoVenda.ToString("C")</dd>
+
+        <dt class="col-sm-2">Categoria</dt>
+        <dd class="col-sm-10">@Model.Categoria</dd>
+
+        <dt class="col-sm-2">Usado Internamente</dt>
+        <dd class="col-sm-10">@(Model.UsadoInternamente ? "Sim" : "Não")</dd>
+
+        <dt class="col-sm-2">Fornecedores</dt>
+        <dd class="col-sm-10">
+            @if (Model.FornecedorProdutos != null && Model.FornecedorProdutos.Any())
+            {
+                <ul>
+                    @foreach (var fornecedorProduto in Model.FornecedorProdutos)
+                    {
+                        <li>@fornecedorProduto.Fornecedor.RazaoSocial</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>Sem fornecedores cadastrados</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>

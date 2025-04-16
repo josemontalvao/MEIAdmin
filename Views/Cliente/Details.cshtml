@@ -1,0 +1,20 @@
+@model MEIAdmin.Models.Cliente
+
+@{
+    ViewData["Title"] = "Detalhes do Cliente";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <strong>Nome:</strong> @Model.RazaoSocial
+</div>
+<div>
+    <strong>Email:</strong> @Model.Contato
+</div>
+<div>
+    <strong>Telefone:</strong> @Model.Telefone
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning mt-3">Editar</a>
+<a asp-action="Index" class="btn btn-secondary mt-3">Voltar</a>

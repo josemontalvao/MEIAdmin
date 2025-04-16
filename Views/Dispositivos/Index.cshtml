@@ -1,0 +1,37 @@
+@model IEnumerable<MEIAdmin.Models.Dispositivo>
+
+@{
+    ViewData["Title"] = "Dispositivos do Cliente";
+}
+
+<h2>@ViewData["Title"]</h2>
+<a asp-action="AdicionarDispositivo" asp-route-clienteId="@ViewBag.ClienteId" class="btn btn-primary">Adicionar Dispositivo</a>
+<a asp-action="Index" class="btn btn-secondary">Voltar</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nome)</th>
+            <th>@Html.DisplayNameFor(model => model.Modelo)</th>
+            <th>@Html.DisplayNameFor(model => model.NumeroSerie)</th>
+            <th>@Html.DisplayNameFor(model => model.DataInstalacao)</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                <td>@Html.DisplayFor(modelItem => item.Modelo)</td>
+                <td>@Html.DisplayFor(modelItem => item.NumeroSerie)</td>
+                <td>@Html.DisplayFor(modelItem => item.DataInstalacao)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a> |
+                    <a asp-action="ExcluirDispositivo" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

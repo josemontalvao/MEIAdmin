@@ -1,0 +1,39 @@
+﻿@model IEnumerable<MEIAdmin.Models.ViewModels.RelatorioContasReceberViewModel>
+
+@{
+    ViewData["Title"] = "Relatório de Contas a Receber";
+}
+
+<h2>Relatório de Contas a Receber</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Data de Vencimento</th>
+            <th>Cliente</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var grupo in Model)
+        {
+            <tr>
+                <td colspan="4" class="fw-bold">@grupo.DataVencimento.ToString("dd/MM/yyyy")</td>
+            </tr>
+            @foreach (var conta in grupo.Contas ?? new List<MEIAdmin.Models.ContaReceber>())
+            {
+                <tr>
+                    <td></td>
+                    <td>@(conta.Cliente?.RazaoSocial ?? "Cliente não informado")</td>
+                    <td>@conta.Descricao</td>
+                    <td>@conta.Valor.ToString("C")</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Total do Dia:</td>
+                <td class="fw-bold">@grupo.Total.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>

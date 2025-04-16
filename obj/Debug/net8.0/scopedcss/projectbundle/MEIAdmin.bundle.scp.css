@@ -1,0 +1,47 @@
+/* _content/MEIAdmin/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Estilo Moderno para a Página Inicial da SMARTCONTROL SYSTEMAS */
+
+/* Define um fundo escuro apenas para a página inicial */
+.home-page body[b-sy5oj1mnis] {
+  background: linear-gradient(135deg, #1e1e2f, #2b2b3c);
+  color: #ffffff;
+}
+
+/* Mantém o fundo branco para as outras páginas */
+body:not(.home-page)[b-sy5oj1mnis] {
+  background: #ffffff;
+  color: #333;
+}
+
+/* Ajusta as caixas para que fiquem visíveis em todos os temas */
+.container[b-sy5oj1mnis],
+.card[b-sy5oj1mnis],
+.form-control[b-sy5oj1mnis] {
+  background: #ffffff;
+  color: #333;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste para botões */
+.btn-primary[b-sy5oj1mnis] {
+  background-color: #0077cc;
+  border: none;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover[b-sy5oj1mnis] {
+  background-color: #0056b3;
+}
+
+/* Ajuste para o footer */
+.footer[b-sy5oj1mnis] {
+  background: #15151e;
+  color: #ffffff;
+  text-align: center;
+  padding: 15px 0;
+}

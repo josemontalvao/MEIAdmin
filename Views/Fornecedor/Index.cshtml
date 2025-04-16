@@ -1,0 +1,42 @@
+@model IEnumerable<MEIAdmin.Models.Fornecedor>
+
+@{
+    ViewData["Title"] = "Lista de Fornecedores";
+}
+
+<h2>Lista de Fornecedores</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Fornecedor</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Razão Social</th>
+            <th>Contato</th>
+            <th>Telefone</th>
+            <th>Email</th>
+            <th>Endereço</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var fornecedor in Model)
+        {
+            <tr>
+                <td>@fornecedor.RazaoSocial</td>
+                <td>@fornecedor.Contato</td>
+                <td>@fornecedor.Telefone</td>
+                <td>@fornecedor.Email</td>
+                <td>@fornecedor.Endereco, @fornecedor.Numero - @fornecedor.Bairro, @fornecedor.Cidade - @fornecedor.Estado
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@fornecedor.Id" class="btn btn-warning btn-sm">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@fornecedor.Id" class="btn btn-info btn-sm">Detalhes</a> |
+                    <a asp-action="Details" asp-route-id="@fornecedor.Id" class="btn btn-info btn-sm">Produtos</a> |
+                    <a asp-action="Delete" asp-route-id="@fornecedor.Id" class="btn btn-danger btn-sm">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

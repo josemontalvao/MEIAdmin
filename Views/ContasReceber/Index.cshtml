@@ -1,0 +1,42 @@
+﻿@model IEnumerable<MEIAdmin.Models.ContaReceber>
+
+@{
+    ViewData["Title"] = "Contas a Receber";
+}
+
+<h2>Contas a Receber</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nova Conta a Receber</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Data de Vencimento</th>
+            <th>Data de Recebimento</th>
+            <th>Status</th>
+            <th>Cliente</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Descricao</td>
+                <td>@item.Valor.ToString("C")</td>
+                <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
+                <td>@(item.DataRecebimento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                <td>@item.Status</td>
+                <td>@item.Cliente.RazaoSocial</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

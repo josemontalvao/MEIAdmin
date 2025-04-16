@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartControl Systemas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SmartControl</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Cliente" asp-action="Index">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Dispositivos" asp-action="Index">Dispositivos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Fornecedores" asp-action="Index">Fornecedores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Produtos" asp-action="Index">Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Colaboradores" asp-action="Index">Colaboradores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ContasPagar" asp-action="Index">Contas a Pagar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ContasReceber" asp-action="Index">Contas a Receber</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Relatórios
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasPagarPendentes">Contas a Pagar</a></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasReceberPendentes">Contas a Receber</a></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ProdutosEmEstoque">Produtos</a></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="Colaboradores">Colaboradores</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

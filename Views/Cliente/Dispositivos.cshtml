@@ -1,0 +1,46 @@
+﻿@model MEIAdmin.Models.Cliente
+
+@{
+    ViewData["Title"] = "Dispositivos do Cliente";
+}
+
+<h2>@ViewData["Title"] - @Model.RazaoSocial</h2>
+
+<a asp-action="Index" class="btn btn-secondary">Voltar</a>
+<a asp-action="Create" asp-controller="Dispositivos" class="btn btn-primary">Adicionar Dispositivo</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Modelo</th>
+            <th>Número de Série</th>
+            <th>Data de Instalação</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Dispositivos != null && Model.Dispositivos.Any())
+        {
+            @foreach (var dispositivo in Model.Dispositivos)
+            {
+                <tr>
+                    <td>@dispositivo.Nome</td>
+                    <td>@dispositivo.Modelo</td>
+                    <td>@dispositivo.NumeroSerie</td>
+                    <td>@(dispositivo.DataInstalacao?.ToString("dd/MM/yyyy") ?? "Não informado")</td>
+                    <td>
+                        <a asp-action="Edit" asp-controller="Dispositivos" asp-route-id="@dispositivo.Id" class="btn btn-warning btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-controller="Dispositivos" asp-route-id="@dispositivo.Id" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">Nenhum dispositivo cadastrado para este cliente.</td>
+            </tr>
+        }
+    </tbody>
+</table>

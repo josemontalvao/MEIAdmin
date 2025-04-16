@@ -1,0 +1,124 @@
+/* Estilo Moderno e Profissional para SMARTCONTROL SYSTEMAS */
+
+/* Fonte personalizada e ajustes globais */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+}
+
+/* Links */
+a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+/* Navbar moderna */
+.navbar {
+  background: linear-gradient(135deg, #1b6ec2, #0077cc);
+  padding: 10px 20px !important;
+  /* Reduzi a altura */
+  display: flex !important;
+  align-items: center !important;
+  /* Centraliza os itens verticalmente */
+}
+
+/* Ajuste do logo */
+.navbar-brand {
+  font-weight: bold !important;
+  color: #fff !important;
+  font-size: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  /* Centraliza com o logo */
+}
+
+.navbar-brand img {
+  height: 35px !important;
+  /* Ajuste do tamanho do logo */
+  margin-right: 8px !important;
+  /* Aproxima o nome do logo */
+}
+
+.navbar-nav .nav-link {
+  color: #fff !important;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Botões */
+.btn-primary {
+  background-color: #0077cc;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-disabled {
+  background-color: #d6d6d6;
+  color: #666;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-disabled:hover {
+  background-color: #c0c0c0;
+}
+
+/* Rodapé moderno */
+.footer {
+  background-color: #1b6ec2;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.9rem;
+  margin-top: 40px;
+}
+
+/* Estilo para título principal */
+h1.fw-bold {
+  font-size: 2.5rem;
+  color: #0d47a1;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 1.2px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 8px 15px !important;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem !important;
+  }
+
+  .navbar-brand img {
+    height: 30px !important;
+    /* Ajusta o logo para telas menores */
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.9rem !important;
+  }
+}

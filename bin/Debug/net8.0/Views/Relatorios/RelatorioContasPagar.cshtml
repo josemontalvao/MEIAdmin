@@ -1,0 +1,40 @@
+﻿@model IEnumerable<MEIAdmin.Models.ViewModels.RelatorioContasPagarViewModel>
+
+@{
+    ViewData["Title"] = "Relatório de Contas a Pagar";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Data de Vencimento</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var grupo in Model)
+        {
+            <tr class="table-primary">
+                <td colspan="3"><strong>@grupo.DataVencimento.ToString("dd/MM/yyyy")</strong></td>
+            </tr>
+            @foreach (var conta in grupo.Contas)
+            {
+                <tr>
+                    <td></td>
+                    <td>@conta.Descricao</td>
+                    <td>@conta.Valor.ToString("C")</td>
+                </tr>
+            }
+            <tr class="table-secondary">
+                <td colspan="2" class="text-right"><strong>Total:</strong></td>
+                <td><strong>@grupo.Total.ToString("C")</strong></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button onclick="window.print()" class="btn btn-success">Imprimir Relatório</button>

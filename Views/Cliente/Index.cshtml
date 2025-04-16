@@ -1,0 +1,39 @@
+@model IEnumerable<MEIAdmin.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Lista de Clientes";
+}
+
+<h2>@ViewData["Title"]</h2>
+<a asp-action="Create" class="btn btn-primary">Novo Cliente</a>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Contato</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cliente in Model)
+        {
+            <tr>
+                <td>@cliente.RazaoSocial</td>
+                <td>@cliente.Contato</td>
+                <td>@cliente.Telefone</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@cliente.Id" class="btn btn-warning btn-sm">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@cliente.Id" class="btn btn-info btn-sm">Detalhes</a> |
+                    <a asp-action="Dispositivos" asp-route-id="@cliente.Id" class="btn btn-secondary btn-sm">Dispositivos</a> |
+                    <form asp-action="AtivarDesativar" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@cliente.Id" />
+                        <button type="submit" class="btn btn-sm @(cliente.Ativo ? "btn-danger" : "btn-success")">
+                            @(cliente.Ativo ? "Desativo" : "Ativo")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

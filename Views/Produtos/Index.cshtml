@@ -1,0 +1,59 @@
+@model IEnumerable<MEIAdmin.Models.Produto>
+
+@{
+    ViewData["Title"] = "Lista de Produtos";
+}
+
+<h2>Lista de Produtos</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Produto</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+            <th>Preço de Compra</th>
+            <th>Preço de Venda</th>
+            <th>Categoria</th>
+            <th>Fornecedores</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var produto in Model)
+        {
+            <tr>
+                <td>@produto.Nome</td>
+                <td>@produto.Quantidade</td>
+                <td>@produto.PrecoCompra.ToString("C")</td>
+                <td>@produto.PrecoVenda.ToString("C")</td>
+                <td>@produto.Categoria</td>
+                <td>
+                    @if (produto.FornecedorProdutos != null && produto.FornecedorProdutos.Any())
+                    {
+                        <ul>
+                            @foreach (var fornecedorProduto in produto.FornecedorProdutos)
+                            {
+                                <li>@fornecedorProduto.Fornecedor.RazaoSocial</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>Sem fornecedores</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@produto.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Details" asp-route-id="@produto.Id" class="btn btn-info btn-sm">Detalhes</a>
+                    <form asp-action="Delete" asp-route-id="@produto.Id" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este produto?');">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
