@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "C:\\Projetos\\MEIAdmin\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\MEIAdmin.bundle.scp.css",
-      "PackagePath": "staticwebassets\\MEIAdmin.c3lfvr0eon.bundle.scp.css"
+      "PackagePath": "staticwebassets\\MEIAdmin.bundle.scp.css"
     },
     {
       "Id": "C:\\Projetos\\MEIAdmin\\wwwroot\\css\\site.css",
@@ -267,10 +267,6 @@
     {
       "Id": "C:\\Projetos\\MEIAdmin\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
-    },
-    {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.MEIAdmin.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
-      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.MEIAdmin.Microsoft.AspNetCore.StaticWebAssets.props",

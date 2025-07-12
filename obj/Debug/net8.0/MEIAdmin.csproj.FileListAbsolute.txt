@@ -284,7 +284,6 @@ C:\Projetos\MEIAdmin\bin\Debug\net8.0\appsettings.Development.json
 C:\Projetos\MEIAdmin\bin\Debug\net8.0\appsettings.json
 C:\Projetos\MEIAdmin\bin\Debug\net8.0\Views\Relatorios\RelatorioContasPagar.cshtml
 C:\Projetos\MEIAdmin\bin\Debug\net8.0\MEIAdmin.staticwebassets.runtime.json
-C:\Projetos\MEIAdmin\bin\Debug\net8.0\MEIAdmin.staticwebassets.endpoints.json
 C:\Projetos\MEIAdmin\bin\Debug\net8.0\MEIAdmin.exe
 C:\Projetos\MEIAdmin\bin\Debug\net8.0\MEIAdmin.deps.json
 C:\Projetos\MEIAdmin\bin\Debug\net8.0\MEIAdmin.runtimeconfig.json
@@ -536,17 +535,15 @@ C:\Projetos\MEIAdmin\obj\Debug\net8.0\scopedcss\bundle\MEIAdmin.styles.css
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\scopedcss\projectbundle\MEIAdmin.bundle.scp.css
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets.build.json
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets.development.json
-C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets\msbuild.MEIAdmin.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets\msbuild.MEIAdmin.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets\msbuild.build.MEIAdmin.props
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.MEIAdmin.props
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.MEIAdmin.props
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Projetos\MEIAdmin\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\MEIAdmin.csproj.Up2Date
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\MEIAdmin.dll
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\refint\MEIAdmin.dll
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\MEIAdmin.pdb
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\MEIAdmin.genruntimeconfig.cache
 C:\Projetos\MEIAdmin\obj\Debug\net8.0\ref\MEIAdmin.dll
+C:\Projetos\MEIAdmin\obj\Debug\net8.0\MEIAdmin.sourcelink.json
