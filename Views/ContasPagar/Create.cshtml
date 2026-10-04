@@ -4,71 +4,137 @@
     ViewData["Title"] = "Nova Conta a Pagar";
 }
 
-<h2>Nova Conta a Pagar</h2>
+<div class="container mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">📤 Nova Conta a Pagar (À Vista ou Parcelada)</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
 
-<form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="Descricao" class="control-label"></label>
-        <input asp-for="Descricao" class="form-control" />
-        <span asp-validation-for="Descricao" class="text-danger"></span>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                <!-- FORNECEDOR E COLABORADOR -->
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="FornecedorId" class="form-label fw-bold">Fornecedor</label>
+                        <select asp-for="FornecedorId" class="form-select">
+                            <option value="">Selecione um Fornecedor</option>
+                            @if (ViewBag.Fornecedores != null)
+                            {
+                                @foreach (var fornecedor in ViewBag.Fornecedores as List<MEIAdmin.Models.Fornecedor>)
+                                {
+                                    <option value="@(fornecedor?.Id)">@fornecedor?.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="ColaboradorId" class="form-label fw-bold">Colaborador (Opcional)</label>
+                        <select asp-for="ColaboradorId" class="form-select">
+                            <option value="">Selecione um Colaborador</option>
+                            @if (ViewBag.Colaboradores != null)
+                            {
+                                @foreach (var colaborador in ViewBag.Colaboradores as List<MEIAdmin.Models.Colaborador>)
+                                {
+                                    <option value="@(colaborador?.Id)">@colaborador?.Nome</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <!-- DESCRIÇÃO -->
+                <div class="form-group mb-3">
+                    <label asp-for="Descricao" class="form-label fw-bold">Descrição da Despesa / Compra</label>
+                    <input asp-for="Descricao" class="form-control" placeholder="Ex: Compra de Câmeras e Cabos NF 18200" required />
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+
+                <!-- VALOR TOTAL E NÚMERO DE PARCELAS -->
+                <div class="row bg-light p-3 rounded border mb-3">
+                    <div class="col-md-4 form-group mb-2">
+                        <label asp-for="Valor" class="form-label fw-bold text-danger">Valor Total R$</label>
+                        <input asp-for="Valor" id="inputValorTotal" class="form-control form-control-lg fw-bold" type="number" step="0.01" placeholder="0,00" required />
+                        <span asp-validation-for="Valor" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-2">
+                        <label class="form-label fw-bold text-danger">Número de Parcelas</label>
+                        <input type="number" name="parcelas" id="inputParcelas" class="form-control form-control-lg fw-bold" value="1" min="1" max="60" required />
+                        <small class="text-muted">1 = Boleto único | 2 ou mais = Faturado/Parcelado</small>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-2">
+                        <label class="form-label fw-bold text-dark">Resumo dos Boletos</label>
+                        <div id="boxResumoParcelas" class="alert alert-warning py-2 mb-0 fw-bold text-center">
+                            1x de R$ 0,00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATAS E STATUS -->
+                <div class="row">
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="DataVencimento" class="form-label fw-bold">Data do 1º Vencimento</label>
+                        <input asp-for="DataVencimento" id="inputVencimento" class="form-control" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="DataVencimento" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="DataPagamento" class="form-label fw-bold">Data de Pagamento (se já pagou sinal)</label>
+                        <input asp-for="DataPagamento" class="form-control" type="date" />
+                        <span asp-validation-for="DataPagamento" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="Status" class="form-label fw-bold">Status Inicial</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Não Pago">Não Pago (Pendente)</option>
+                            <option value="Pago">Pago (Quitado)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-danger px-4 btn-lg">Salvar e Gerar Contas</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Valor" class="control-label"></label>
-        <input asp-for="Valor" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Valor" class="text-danger"></span>
-    </div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
-    <div class="form-group">
-        <label asp-for="DataVencimento" class="control-label"></label>
-        <input asp-for="DataVencimento" class="form-control" type="date" />
-        <span asp-validation-for="DataVencimento" class="text-danger"></span>
-    </div>
+    <script>
+        const inputValor = document.getElementById('inputValorTotal');
+        const inputParcelas = document.getElementById('inputParcelas');
+        const boxResumo = document.getElementById('boxResumoParcelas');
 
-    <div class="form-group">
-        <label asp-for="DataPagamento" class="control-label"></label>
-        <input asp-for="DataPagamento" class="form-control" type="date" />
-        <span asp-validation-for="DataPagamento" class="text-danger"></span>
-    </div>
+        function atualizarResumo() {
+            const total = parseFloat(inputValor.value) || 0;
+            const qtd = parseInt(inputParcelas.value) || 1;
 
-    <div class="form-group">
-        <label asp-for="Pago" class="control-label"></label>
-        <select asp-for="Pago" class="form-control">
-            <option value="true">Pago</option>
-            <option value="false">Não Pago</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="FornecedorId" class="control-label">Fornecedor</label>
-        <select asp-for="FornecedorId" class="form-control">
-            <option value="">Selecione um Fornecedor</option>
-            @if (ViewBag.Fornecedores != null)
-            {
-                foreach (var fornecedor in ViewBag.Fornecedores as List<Fornecedor>)
-                {
-                    <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+            if (total > 0 && qtd > 0) {
+                const valorParcela = total / qtd;
+                const valorFormatado = valorParcela.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                
+                if (qtd === 1) {
+                    boxResumo.innerHTML = `À vista: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                } else {
+                    boxResumo.innerHTML = `${qtd}x de ${valorFormatado} / mês`;
                 }
+            } else {
+                boxResumo.innerHTML = "1x de R$ 0,00";
             }
-        </select>
-    </div>
+        }
 
-    <div class="form-group">
-        <label asp-for="ColaboradorId" class="control-label">Colaborador</label>
-        <select asp-for="ColaboradorId" class="form-control">
-            <option value="">Selecione um Colaborador</option>
-            @if (ViewBag.Colaboradores != null)
-            {
-                foreach (var colaborador in ViewBag.Colaboradores as List<Colaborador>)
-                {
-                    <option value="@colaborador.Id">@colaborador.Nome</option>
-                }
-            }
-        </select>
-    </div>
-
-    <div class="form-group mt-3">
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>
+        inputValor.addEventListener('input', atualizarResumo);
+        inputParcelas.addEventListener('input', atualizarResumo);
+        atualizarResumo();
+    </script>
+}

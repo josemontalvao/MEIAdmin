@@ -1,51 +1,70 @@
 ﻿@model MEIAdmin.Models.ContaPagar
 
+@{
+    ViewData["Title"] = "Editar Conta a Pagar";
+}
+
 <h2>Editar Conta a Pagar</h2>
 
 <form asp-action="Edit">
     <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
+    <div class="form-group mb-3">
         <label asp-for="Descricao" class="control-label">Descrição</label>
         <input asp-for="Descricao" class="form-control" />
     </div>
 
-    <div class="form-group">
+    <div class="form-group mb-3">
         <label asp-for="Valor" class="control-label">Valor</label>
-        <input asp-for="Valor" class="form-control" type="number" step="0.01" />
+        <input asp-for="Valor" class="form-control" type="number" step="0.01" value="@Model.Valor.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" />
     </div>
 
-    <div class="form-group">
+    <div class="form-group mb-3">
         <label asp-for="DataVencimento" class="control-label">Data de Vencimento</label>
         <input asp-for="DataVencimento" class="form-control" type="date" />
     </div>
 
-    <div class="form-group">
+    <!-- CAMPO 1: DATA DE PAGAMENTO -->
+    <div class="form-group mb-3">
+        <label asp-for="DataPagamento" class="control-label">Data de Pagamento</label>
+        <input asp-for="DataPagamento" class="form-control" type="date" />
+    </div>
+
+    <!-- CAMPO 2: STATUS DO PAGAMENTO (PAGO OU NÃO PAGO) -->
+    <div class="form-group mb-3">
+        <label asp-for="Status" class="control-label">Status do Pagamento</label>
+        <select asp-for="Status" class="form-control">
+            <option value="Não Pago">Não Pago</option>
+            <option value="Pago">Pago</option>
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
         <label asp-for="ColaboradorId" class="control-label">Colaborador</label>
         <select asp-for="ColaboradorId" class="form-control">
             <option value="">Selecione um Colaborador</option>
             @if (ViewBag.Colaboradores != null)
             {
-                foreach (var colaborador in ViewBag.Colaboradores as List<Colaborador>)
+                foreach (var colaborador in ViewBag.Colaboradores as List<MEIAdmin.Models.Colaborador>)
                 {
-                    <option value="@colaborador.Id" selected="@(Model.ColaboradorId == colaborador.Id ? "selected" : null)">
-                        @colaborador.Nome
+                    <option value="@colaborador.Id" selected="@(Model.ColaboradorId == colaborador.Id ? "selected" : "")">
+                        @colaborador?.Nome
                     </option>
                 }
             }
         </select>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mb-3">
         <label asp-for="FornecedorId" class="control-label">Fornecedor</label>
         <select asp-for="FornecedorId" class="form-control">
             <option value="">Selecione um Fornecedor</option>
             @if (ViewBag.Fornecedores != null)
             {
-                foreach (var fornecedor in ViewBag.Fornecedores as List<Fornecedor>)
+                foreach (var fornecedor in ViewBag.Fornecedores as List<MEIAdmin.Models.Fornecedor>)
                 {
-                    <option value="@fornecedor.Id" selected="@(Model.FornecedorId == fornecedor.Id ? "selected" : null)">
-                        @fornecedor.RazaoSocial
+                    <option value="@fornecedor.Id" selected="@(Model.FornecedorId == fornecedor.Id ? "selected" : "")">
+                        @fornecedor?.RazaoSocial
                     </option>
                 }
             }

@@ -44,7 +44,7 @@ namespace MEIAdmin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RazaoSocial,Contato,Telefone,Email,Endereco,Numero,Bairro,Cidade,Estado,CEP,Ativo")] Fornecedor fornecedor)
+        public async Task<IActionResult> Create([Bind("Id,RazaoSocial,CNPJ,Contato,Telefone,Email,Endereco,Numero,Bairro,Cidade,Estado,CEP,Ativo")] Fornecedor fornecedor)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace MEIAdmin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RazaoSocial,Contato,Telefone,Email,Endereco,Numero,Bairro,Cidade,Estado,CEP,Ativo")] Fornecedor fornecedor, int[] produtosSelecionados)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RazaoSocial,CNPJ,Contato,Telefone,Email,Endereco,Numero,Bairro,Cidade,Estado,CEP,Ativo")] Fornecedor fornecedor, int[] produtosSelecionados)
         {
             if (id != fornecedor.Id) return NotFound();
 
@@ -88,7 +88,7 @@ namespace MEIAdmin.Controllers
                 // Atualiza os dados principais
                 _context.Entry(fornecedorAtual).CurrentValues.SetValues(fornecedor);
 
-                // Atualiza a relação de produtos
+                // Atualiza a relaï¿½ï¿½o de produtos
                 fornecedorAtual.FornecedorProdutos.Clear();
                 foreach (var produtoId in produtosSelecionados)
                 {

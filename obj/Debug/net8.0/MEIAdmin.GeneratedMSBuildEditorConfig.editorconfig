@@ -25,6 +25,8 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = C:\Projetos\MEIAdmin
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
 [C:/Projetos/MEIAdmin/Views/Cliente/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxDcmVhdGUuY3NodG1s
@@ -74,6 +76,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFzUGFnYXJcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projetos/MEIAdmin/Views/ContasPagar/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFzUGFnYXJcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projetos/MEIAdmin/Views/ContasPagar/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFzUGFnYXJcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -84,6 +90,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projetos/MEIAdmin/Views/ContasReceber/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFzUmVjZWJlclxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/ContasReceber/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFzUmVjZWJlclxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projetos/MEIAdmin/Views/ContasReceber/Edit.cshtml]
@@ -146,6 +156,30 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projetos/MEIAdmin/Views/OrdemServico/Atender.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZW1TZXJ2aWNvXEF0ZW5kZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/OrdemServico/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZW1TZXJ2aWNvXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/OrdemServico/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZW1TZXJ2aWNvXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/OrdemServico/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZW1TZXJ2aWNvXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/OrdemServico/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZW1TZXJ2aWNvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/Produtos/Baixa.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b3NcQmFpeGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projetos/MEIAdmin/Views/Produtos/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b3NcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -166,12 +200,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioBalancoAnual.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xSZWxhdG9yaW9CYWxhbmNvQW51YWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioBalancoMensal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xSZWxhdG9yaW9CYWxhbmNvTWVuc2FsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioContasPagar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xSZWxhdG9yaW9Db250YXNQYWdhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioContasPagas.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xSZWxhdG9yaW9Db250YXNQYWdhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioContasReceber.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xSZWxhdG9yaW9Db250YXNSZWNlYmVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioContasRecebidas.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xSZWxhdG9yaW9Db250YXNSZWNlYmlkYXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projetos/MEIAdmin/Views/Relatorios/RelatorioProdutos.cshtml]
@@ -184,6 +234,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projetos/MEIAdmin/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/Tecnico/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVjbmljb1xMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projetos/MEIAdmin/Views/Tecnico/MinhasOS.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVjbmljb1xNaW5oYXNPUy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projetos/MEIAdmin/Views/_ViewImports.cshtml]

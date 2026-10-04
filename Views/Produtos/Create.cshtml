@@ -1,78 +1,164 @@
 @model MEIAdmin.Models.Produto
-@using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
     ViewData["Title"] = "Adicionar Produto";
 }
 
-<h2>Adicionar Produto</h2>
+<div class="container mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📦 Cadastrar Novo Produto no Estoque</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Nome" class="control-label"></label>
-        <input asp-for="Nome" class="form-control" required />
-        <span asp-validation-for="Nome" class="text-danger"></span>
+                <!-- LINHA 1: NOME E CATEGORIA -->
+                <div class="row">
+                    <div class="col-md-8 form-group mb-3">
+                        <label asp-for="Nome" class="form-label fw-bold">Nome do Produto</label>
+                        <input asp-for="Nome" class="form-control" placeholder="Ex: Câmera Bullet 1080p, Conector BNC, Bota de Segurança" required />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="Categoria" class="form-label fw-bold">Categoria</label>
+                        <input asp-for="Categoria" class="form-control" list="listaCategorias" placeholder="Selecione ou digite" required />
+                        <datalist id="listaCategorias">
+                            <option value="Dispositivos / CFTV" />
+                            <option value="SDAI / Alarme de Incêndio" />
+                            <option value="Automação Predial" />
+                            <option value="Cabos & Fios" />
+                            <option value="Conectores & Plugs" />
+                            <option value="EPI & Segurança" />
+                            <option value="Ferramentas" />
+                            <option value="Consumo / Escritório" />
+                        </datalist>
+                        <span asp-validation-for="Categoria" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- LINHA 2: QUANTIDADE, UNIDADE E DATA -->
+                <div class="row">
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="Quantidade" class="form-label fw-bold">Quantidade Comprada</label>
+                        <input asp-for="Quantidade" class="form-control" type="number" min="1" value="1" required />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="UnidadeMedida" class="form-label fw-bold">Unidade de Medida</label>
+                        <input asp-for="UnidadeMedida" class="form-control" list="listaUnidades" placeholder="UN, PC, MTS, RL..." required />
+                        <datalist id="listaUnidades">
+                            <option value="UN" />
+                            <option value="PC" />
+                            <option value="MTS" />
+                            <option value="RL" />
+                            <option value="CX" />
+                            <option value="PAR" />
+                        </datalist>
+                        <span asp-validation-for="UnidadeMedida" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="DataCompra" class="form-label fw-bold">Data da Compra</label>
+                        <input asp-for="DataCompra" class="form-control" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="DataCompra" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- CLASSIFICAÇÃO: CONSUMO/EPI vs VENDA -->
+                <div class="card bg-light border-secondary mb-3">
+                    <div class="card-body py-2">
+                        <div class="form-check form-switch mt-1">
+                            <input asp-for="UsadoInternamente" class="form-check-input" type="checkbox" id="checkUsoInterno" style="width: 2.5em; height: 1.25em; cursor: pointer;" />
+                            <label class="form-check-label fw-bold ms-2" for="checkUsoInterno" style="cursor: pointer;">
+                                🏢 Este item é para Uso Interno da Smart Control (Consumo próprio, EPI, Ferramenta ou Escritório)?
+                            </label>
+                        </div>
+                        <small class="text-muted d-block ms-5">
+                            Se marcado, não será calculada margem de lucro para este produto.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- LINHA 3: PREÇOS E MARGEM -->
+                <div class="row">
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="PrecoCompra" class="form-label fw-bold">Preço de Custo (Compra) R$</label>
+                        <input asp-for="PrecoCompra" id="inputPrecoCompra" class="form-control" type="number" step="0.01" placeholder="0,00" required />
+                        <span asp-validation-for="PrecoCompra" class="text-danger"></span>
+                    </div>
+
+                    <!-- CAMPO DE MARGEM QUE SOME SE FOR USO INTERNO -->
+                    <div class="col-md-4 form-group mb-3" id="divMargemLucro">
+                        <label asp-for="MargemLucro" class="form-label fw-bold">Margem de Lucro (%)</label>
+                        <input asp-for="MargemLucro" id="inputMargem" class="form-control" type="number" step="0.01" value="30" required />
+                        <span asp-validation-for="MargemLucro" class="text-danger"></span>
+                    </div>
+
+                    <!-- ESTIMATIVA DE PREÇO DE VENDA -->
+                    <div class="col-md-4 form-group mb-3" id="divPrecoVenda">
+                        <label class="form-label fw-bold text-success">Preço de Venda Sugerido</label>
+                        <input type="text" id="displayPrecoVenda" class="form-control bg-light fw-bold text-success" value="R$ 0,00" readonly />
+                    </div>
+                </div>
+
+                <!-- LINHA 4: FORNECEDOR -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">Fornecedor (Opcional)</label>
+                    <select name="FornecedorIds" class="form-select" asp-items="ViewBag.Fornecedores">
+                        <option value="">Selecione um fornecedor</option>
+                    </select>
+                </div>
+
+                <!-- BOTÕES -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary px-4 btn-lg">Salvar Produto</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para a lista</a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Quantidade" class="control-label"></label>
-        <input asp-for="Quantidade" class="form-control" type="number" required />
-        <span asp-validation-for="Quantidade" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PrecoCompra" class="control-label"></label>
-        <input asp-for="PrecoCompra" class="form-control" type="number" step="0.01" required />
-        <span asp-validation-for="PrecoCompra" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="MargemLucro" class="control-label"></label>
-        <input asp-for="MargemLucro" class="form-control" type="number" step="0.01" required />
-        <span asp-validation-for="MargemLucro" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DataCompra" class="control-label"></label>
-        <input asp-for="DataCompra" class="form-control" type="date" required />
-        <span asp-validation-for="DataCompra" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="UnidadeMedida" class="control-label"></label>
-        <input asp-for="UnidadeMedida" class="form-control" required />
-        <span asp-validation-for="UnidadeMedida" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Categoria" class="control-label"></label>
-        <input asp-for="Categoria" class="form-control" required />
-        <span asp-validation-for="Categoria" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="UsadoInternamente" class="control-label"></label>
-        <input asp-for="UsadoInternamente" type="checkbox" class="form-check-input" />
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">Fornecedores (Opcional)</label>
-        <select name="FornecedorIds" class="form-control" asp-items="ViewBag.Fornecedores">
-            <option value="">Selecione um fornecedor</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Salvar" class="btn btn-primary" />
-    </div>
-</form>
-
-<div>
-    <a asp-action="Index">Voltar para a lista</a>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script>
+        const checkUsoInterno = document.getElementById('checkUsoInterno');
+        const divMargemLucro = document.getElementById('divMargemLucro');
+        const divPrecoVenda = document.getElementById('divPrecoVenda');
+        const inputMargem = document.getElementById('inputMargem');
+        const inputPrecoCompra = document.getElementById('inputPrecoCompra');
+        const displayPrecoVenda = document.getElementById('displayPrecoVenda');
+
+        function calcularPrecoVenda() {
+            const custo = parseFloat(inputPrecoCompra.value) || 0;
+            const margem = parseFloat(inputMargem.value) || 0;
+            const venda = custo * (1 + (margem / 100));
+            displayPrecoVenda.value = venda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function alternarUsoInterno() {
+            if (checkUsoInterno.checked) {
+                divMargemLucro.style.display = 'none';
+                divPrecoVenda.style.display = 'none';
+                inputMargem.value = 0;
+            } else {
+                divMargemLucro.style.display = 'block';
+                divPrecoVenda.style.display = 'block';
+                if (inputMargem.value == 0) inputMargem.value = 30;
+                calcularPrecoVenda();
+            }
+        }
+
+        checkUsoInterno.addEventListener('change', alternarUsoInterno);
+        inputPrecoCompra.addEventListener('input', calcularPrecoVenda);
+        inputMargem.addEventListener('input', calcularPrecoVenda);
+
+        // Roda na inicialização
+        alternarUsoInterno();
+        calcularPrecoVenda();
+    </script>
 }

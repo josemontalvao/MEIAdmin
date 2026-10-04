@@ -8,31 +8,36 @@ namespace MEIAdmin.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "A Razão Social ou Nome é obrigatório.")]
         public string RazaoSocial { get; set; } = string.Empty;
 
-        public string Contato { get; set; } = string.Empty;
-        public string Telefone { get; set; } = string.Empty;
+        public string? Contato { get; set; }
+        public string? Telefone { get; set; }
 
-        public string CGC { get; set; } = string.Empty;
-        public string InscEstadual { get; set; } = string.Empty;
+        // E-mail opcional (com a interrogação para não travar)
+        public string? Email { get; set; }
+
+        // Documentos opcionais
+        public string? CpfCnpj { get; set; }
+        public string? InscEstadual { get; set; }
 
         [Required(ErrorMessage = "A data de cadastro é obrigatória.")]
         [DataType(DataType.Date)]
         public DateTime DataCadastro { get; set; }
 
-        // Endereço do cliente
-        public string Endereco { get; set; } = string.Empty;
-        public string Numero { get; set; } = string.Empty;
-        public string Bairro { get; set; } = string.Empty;
-        public string Cidade { get; set; } = string.Empty;
-        public string Estado { get; set; } = string.Empty;
-        public string CEP { get; set; } = string.Empty;
+        // Endereço opcional
+        public string? Endereco { get; set; }
+        public string? Numero { get; set; }
+        public string? Bairro { get; set; }
+        public string? Cidade { get; set; }
+        public string? Estado { get; set; }
+        public string? CEP { get; set; }
 
-        // Novo campo para ativar/desativar cliente
+        // Campo para ativar/desativar cliente
         public bool Ativo { get; set; } = true;
 
-        // Relacionamento: Um cliente pode ter vários dispositivos
+        // Relacionamentos
         public List<Dispositivo> Dispositivos { get; set; } = new List<Dispositivo>();
     }
 }
+

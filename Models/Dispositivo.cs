@@ -12,21 +12,21 @@ namespace MEIAdmin.Models
 
         [Required]
         [StringLength(100)]
-        public string Nome { get; set; }
+        public string? Nome { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Modelo { get; set; }
+        public string? Modelo { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string NumeroSerie { get; set; }
+        public string? NumeroSerie { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? DataInstalacao { get; set; }
 
         [ForeignKey("Cliente")]
         public int ClienteId { get; set; }
-        public Cliente Cliente { get; set; }
+        public Cliente? Cliente { get; set; }
     }
 }

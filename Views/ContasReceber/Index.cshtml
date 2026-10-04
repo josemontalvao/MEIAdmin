@@ -7,35 +7,55 @@
 <h2>Contas a Receber</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Nova Conta a Receber</a>
+    <a asp-action="Create" class="btn btn-primary mb-3">Nova Conta a Receber</a>
 </p>
 
-<table class="table table-striped">
-    <thead>
+<table class="table table-striped table-hover align-middle mt-3">
+    <thead class="table-dark">
         <tr>
             <th>Descrição</th>
             <th>Valor</th>
-            <th>Data de Vencimento</th>
-            <th>Data de Recebimento</th>
+            <th>Vencimento</th>
+            <th>Data Recebto</th>
             <th>Status</th>
             <th>Cliente</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@item.Descricao</td>
+                    <td class="fw-bold text-primary">@item.Valor.ToString("C")</td>
+                    <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
+                    <td>@(item.DataRecebimento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                    <td>
+                        @if (item.Status == "Recebido" || item.Status == "Pago")
+                        {
+                            <span class="badge bg-success">Recebido</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">@(item.Status ?? "Pendente")</span>
+                        }
+                    </td>
+                    <td>@(item.Cliente?.RazaoSocial ?? "N/A")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
+                        <!-- BOTÃO DE EXCLUIR ADICIONADO -->
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@item.Descricao</td>
-                <td>@item.Valor.ToString("C")</td>
-                <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
-                <td>@(item.DataRecebimento?.ToString("dd/MM/yyyy") ?? "-")</td>
-                <td>@item.Status</td>
-                <td>@item.Cliente.RazaoSocial</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
-                </td>
+                <td colspan="7" class="text-center py-3 text-muted">Nenhuma conta a receber cadastrada.</td>
             </tr>
         }
     </tbody>

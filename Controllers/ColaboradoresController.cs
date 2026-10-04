@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MEIAdmin.Data;
 using MEIAdmin.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MEIAdmin.Controllers
@@ -15,22 +16,22 @@ namespace MEIAdmin.Controllers
             _context = context;
         }
 
-        // GET: Colaboradores
+        // GET: Colaboradores (Ordenado por nome)
         public async Task<IActionResult> Index()
         {
-            var colaboradores = await _context.Colaboradores.ToListAsync();
+            var colaboradores = await _context.Colaboradores
+                .OrderBy(c => c.Nome)
+                .ToListAsync();
             return View(colaboradores);
         }
 
         // GET: Colaboradores/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var colaborador = await _context.Colaboradores.FindAsync(id);
-            if (colaborador == null)
-                return NotFound();
+            if (colaborador == null) return NotFound();
 
             return View(colaborador);
         }
@@ -41,11 +42,14 @@ namespace MEIAdmin.Controllers
             return View();
         }
 
-        // POST: Colaboradores/Create
+        // POST: Colaboradores/Create (COM LOGIN, SENHA E PERFIL NO BIND)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,Cargo,Telefone,Email,Endereco,Numero,Bairro,Cidade,Estado,CEP,DataContratacao,DataDemissao")] Colaborador colaborador)
+        public async Task<IActionResult> Create([Bind("Nome,Cargo,Telefone,Email,Login,Senha,Perfil,Endereco,Numero,Bairro,Cidade,Estado,CEP,DataContratacao,DataDemissao")] Colaborador colaborador)
         {
+            if (string.IsNullOrWhiteSpace(colaborador.Perfil))
+                colaborador.Perfil = "Tecnico";
+
             if (ModelState.IsValid)
             {
                 _context.Add(colaborador);
@@ -58,23 +62,20 @@ namespace MEIAdmin.Controllers
         // GET: Colaboradores/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var colaborador = await _context.Colaboradores.FindAsync(id);
-            if (colaborador == null)
-                return NotFound();
+            if (colaborador == null) return NotFound();
 
             return View(colaborador);
         }
 
-        // POST: Colaboradores/Edit/5
+        // POST: Colaboradores/Edit/5 (COM LOGIN, SENHA E PERFIL NO BIND)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo,Telefone,Email,Endereco,Numero,Bairro,Cidade,Estado,CEP,DataContratacao,DataDemissao")] Colaborador colaborador)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo,Telefone,Email,Login,Senha,Perfil,Endereco,Numero,Bairro,Cidade,Estado,CEP,DataContratacao,DataDemissao")] Colaborador colaborador)
         {
-            if (id != colaborador.Id)
-                return NotFound();
+            if (id != colaborador.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -85,10 +86,8 @@ namespace MEIAdmin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ColaboradorExists(colaborador.Id))
-                        return NotFound();
-                    else
-                        throw;
+                    if (!ColaboradorExists(colaborador.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -98,12 +97,10 @@ namespace MEIAdmin.Controllers
         // GET: Colaboradores/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var colaborador = await _context.Colaboradores.FindAsync(id);
-            if (colaborador == null)
-                return NotFound();
+            if (colaborador == null) return NotFound();
 
             return View(colaborador);
         }

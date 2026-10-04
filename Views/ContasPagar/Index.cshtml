@@ -6,14 +6,14 @@
 
 <h2>Contas a Pagar</h2>
 
-<a asp-action="Create" class="btn btn-primary">Nova Conta</a>
+<a asp-action="Create" class="btn btn-primary mb-3">Nova Conta</a>
 
-<table class="table mt-3">
-    <thead>
+<table class="table table-striped table-hover mt-3">
+    <thead class="table-light">
         <tr>
             <th>Valor</th>
             <th>Vencimento</th>
-            <th>Pagamento</th>
+            <th>Data Pagto</th>
             <th>Status</th>
             <th>Fornecedor</th>
             <th>Colaborador</th>
@@ -26,10 +26,19 @@
             @foreach (var conta in Model)
             {
                 <tr>
-                    <td>@conta.Valor.ToString("C")</td>
+                    <td class="fw-bold">@conta.Valor.ToString("C")</td>
                     <td>@conta.DataVencimento.ToString("dd/MM/yyyy")</td>
-                    <td>@(conta.DataPagamento?.ToString("dd/MM/yyyy") ?? "Não pago")</td>
-                    <td>@conta.Status</td>
+                    <td>@(conta.DataPagamento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                    <td>
+                        @if (conta.Status == "Pago")
+                        {
+                            <span class="badge bg-success">Pago</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">@(conta.Status ?? "Não Pago")</span>
+                        }
+                    </td>
                     <td>@(conta.Fornecedor?.RazaoSocial ?? "N/A")</td>
                     <td>@(conta.Colaborador?.Nome ?? "N/A")</td>
                     <td>

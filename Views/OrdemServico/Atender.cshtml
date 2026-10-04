@@ -1,0 +1,236 @@
+@model MEIAdmin.Models.OrdemServico
+
+@{
+    Layout = null; // TIRA A TRAVA DO ADMIN PARA O TÉCNICO ABRIR NO CELULAR!
+    ViewData["Title"] = $"Atendimento O.S. #{Model.Id}";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Control - Atendimento O.S. #@Model.Id</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+
+    <!-- BARRA SUPERIOR DO TÉCNICO -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-3">
+        <div class="container-fluid d-flex justify-content-between">
+            <span class="navbar-brand fw-bold mb-0">
+                🛠️ Atendimento O.S. #@Model.Id
+            </span>
+            <a href="/Tecnico/MinhasOS" class="btn btn-outline-light btn-sm">⬅️ Minhas O.S.</a>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <!-- CARTÃO DO CLIENTE E INSTRUÇÃO -->
+        <div class="card border-primary shadow-sm mb-3">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">🏢 Dados do Cliente</h6>
+                <span class="badge bg-warning text-dark">@Model.TipoManutencao</span>
+            </div>
+            <div class="card-body bg-white">
+                <h5 class="text-dark fw-bold mb-1">@(Model.Cliente?.RazaoSocial ?? "N/A")</h5>
+                <p class="text-muted small mb-2">
+                    📍 @(Model.Cliente?.Endereco), @(Model.Cliente?.Numero) - @(Model.Cliente?.Bairro)<br/>
+                    📞 Contato: @(Model.Cliente?.Contato) - @(Model.Cliente?.Telefone)
+                </p>
+                <div class="alert alert-info py-2 mb-0 small">
+                    <strong>Instrução da Central:</strong><br/>
+                    @Model.DescricaoProblema
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO DE EXECUÇÃO EM CAMPO -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0 fw-bold">📋 Relatório de Execução do Técnico</h6>
+            </div>
+            <div class="card-body p-3 bg-white">
+                <form id="formAtendimento" asp-action="Atender" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="assinaturaBase64" id="inputAssinaturaBase64" />
+
+                    <!-- DATAS E HORAS -->
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label class="form-label fw-bold small">Data e Hora de Início:</label>
+                            <input type="datetime-local" name="dataInicio" class="form-control" value="@(Model.DataInicio?.ToString("yyyy-MM-ddTHH:mm") ?? DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" required />
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label class="form-label fw-bold small">Data e Hora de Término:</label>
+                            <input type="datetime-local" name="dataFim" class="form-control" value="@(Model.DataFim?.ToString("yyyy-MM-ddTHH:mm") ?? DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm"))" required />
+                        </div>
+                    </div>
+
+                    <!-- DESCRIÇÃO DO SERVIÇO FEITO -->
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold small">Descrição dos Serviços Executados:</label>
+                        <textarea name="servicoExecutado" class="form-control" rows="3" placeholder="Descreva o que foi inspecionado, testado ou reparado..." required>@Model.ServicoExecutado</textarea>
+                    </div>
+
+                    <!-- PEÇAS E MATERIAIS GASTOS -->
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold small">Peças e Materiais Utilizados do Estoque:</label>
+                        <textarea name="pecasUtilizadas" class="form-control" rows="2" placeholder="Ex: 1 Fonte 12V 2A, 2 Conectores BNC, 10m de Cabo...">@Model.PecasUtilizadas</textarea>
+                    </div>
+
+                    <!-- OBSERVAÇÕES TÉCNICAS -->
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold small">Observações Técnicas / Recomendações:</label>
+                        <textarea name="observacoesTecnicas" class="form-control" rows="2" placeholder="Ex: Sistema testado e 100% operacional...">@Model.ObservacoesTecnicas</textarea>
+                    </div>
+
+                    <!-- EVIDÊNCIAS FOTOGRÁFICAS DINÂMICAS -->
+                    <div class="card bg-light p-3 border-secondary mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold text-primary mb-0 small">📸 Fotos (Câmera do Celular)</h6>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="adicionarFoto()">
+                                ➕ Mais Foto
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mb-3" style="font-size: 0.75rem;">Você pode tirar fotos pelo celular ou selecionar da galeria.</small>
+
+                        <div id="containerFotos">
+                            <div class="row foto-item mb-2 p-2 bg-white rounded border align-items-center">
+                                <div class="col-md-5 mb-2 mb-md-0">
+                                    <input type="file" name="fotos" class="form-control form-control-sm" accept="image/* />
+                                </div>
+                                <div class="col-md-6 mb-2 mb-md-0">
+                                    <input type="text" name="legendas" class="form-control form-control-sm" placeholder="Legenda da Foto 1..." />
+                                </div>
+                                <div class="col-md-1 text-center">
+                                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removerFoto(this)">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ASSINATURA DIGITAL COM O DEDO NA TELA -->
+                    <div class="card bg-light p-3 border-secondary mb-4">
+                        <h6 class="fw-bold text-dark mb-1 small">✍️ Assinatura do Cliente / Responsável</h6>
+                        <small class="text-muted d-block mb-2" style="font-size: 0.75rem;">Peça para o cliente assinar com o dedo no quadro abaixo:</small>
+                        
+                        <div class="bg-white border rounded text-center p-1 mb-2" style="touch-action: none;">
+                            <canvas id="canvasAssinatura" width="450" height="150" style="border: 1px dashed #666; max-width: 100%; height: 150px; background-color: #ffffff; cursor: crosshair;"></canvas>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="limparAssinatura()">
+                                🔄 Limpar Assinatura
+                            </button>
+                            <small class="text-muted fst-italic" style="font-size: 0.75rem;">Assinatura por toque</small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg py-3 fw-bold fs-5 shadow">
+                            ✅ Concluir Atendimento e Assinar
+                        </button>
+                        <a href="/Tecnico/MinhasOS" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let contadorFoto = 1;
+        function adicionarFoto() {
+            contadorFoto++;
+            const container = document.getElementById('containerFotos');
+            const novaLinha = document.createElement('div');
+            novaLinha.className = 'row foto-item mb-2 p-2 bg-white rounded border align-items-center';
+            novaLinha.innerHTML = `
+                <div class="col-md-5 mb-2 mb-md-0">
+                    <input type="file" name="fotos" class="form-control form-control-sm" accept="image/* />
+                </div>
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <input type="text" name="legendas" class="form-control form-control-sm" placeholder="Legenda da Foto ${contadorFoto}..." />
+                </div>
+                <div class="col-md-1 text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removerFoto(this)">🗑️</button>
+                </div>
+            `;
+            container.appendChild(novaLinha);
+        }
+
+        function removerFoto(botao) {
+            const itens = document.querySelectorAll('.foto-item');
+            if (itens.length > 1) {
+                botao.closest('.foto-item').remove();
+            } else {
+                alert("Mantenha pelo menos um espaço de foto.");
+            }
+        }
+
+        // Canvas de Assinatura com Touch
+        const canvas = document.getElementById('canvasAssinatura');
+        const ctx = canvas.getContext('2d');
+        let desenhando = false;
+        let temAssinatura = false;
+
+        ctx.strokeStyle = '#002244';
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        function iniciarDesenho(e) {
+            desenhando = true;
+            temAssinatura = true;
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function desenhar(e) {
+            if (!desenhando) return;
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function pararDesenho() {
+            desenhando = false;
+        }
+
+        canvas.addEventListener('mousedown', iniciarDesenho);
+        canvas.addEventListener('mousemove', desenhar);
+        canvas.addEventListener('mouseup', pararDesenho);
+
+        canvas.addEventListener('touchstart', iniciarDesenho, { passive: false });
+        canvas.addEventListener('touchmove', desenhar, { passive: false });
+        canvas.addEventListener('touchend', pararDesenho);
+
+        function limparAssinatura() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            temAssinatura = false;
+            document.getElementById('inputAssinaturaBase64').value = "";
+        }
+
+        document.getElementById('formAtendimento').addEventListener('submit', function (e) {
+            if (temAssinatura) {
+                document.getElementById('inputAssinaturaBase64').value = canvas.toDataURL('image/png');
+            }
+        });
+    </script>
+</body>
+</html>

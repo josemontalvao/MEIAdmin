@@ -1,0 +1,155 @@
+@model MEIAdmin.Models.ViewModels.BalancoMensalViewModel
+
+@{
+    ViewData["Title"] = "Balanço Mensal - Smart Control";
+    
+    var meses = new Dictionary<int, string>
+    {
+        { 1, "Janeiro" }, { 2, "Fevereiro" }, { 3, "Março" }, { 4, "Abril" },
+        { 5, "Maio" }, { 6, "Junho" }, { 7, "Julho" }, { 8, "Agosto" },
+        { 9, "Setembro" }, { 10, "Outubro" }, { 11, "Novembro" }, { 12, "Dezembro" }
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Balanço Financeiro Mensal</h2>
+    <button onclick="window.print()" class="btn btn-outline-secondary">
+        🖨️ Imprimir / Salvar PDF
+    </button>
+</div>
+
+<!-- FILTRO DE MÊS E ANO -->
+<div class="card mb-4 bg-light shadow-sm">
+    <div class="card-body">
+        <form method="get" asp-action="BalancoMensal" class="row g-3 align-items-end">
+            <div class="col-auto">
+                <label class="form-label fw-bold">Mês:</label>
+                <select name="mes" class="form-select">
+                    @foreach (var m in meses)
+                    {
+                        <option value="@m.Key" selected="@(m.Key == Model.Mes ? "selected" : null)">
+                            @m.Value
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label fw-bold">Ano:</label>
+                <input type="number" name="ano" class="form-control" value="@Model.Ano" style="width: 110px;" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">🔍 Consultar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- OS 3 CARDS DO DASHBOARD -->
+<div class="row mb-4">
+    <!-- ENTRADAS -->
+    <div class="col-md-4">
+        <div class="card border-primary shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase mb-1">Entradas (Recebido)</h6>
+                <h3 class="fw-bold text-primary mb-0">+ @Model.TotalRecebido.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAÍDAS -->
+    <div class="col-md-4">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase mb-1">Saídas (Pago)</h6>
+                <h3 class="fw-bold text-danger mb-0">- @Model.TotalPago.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- SALDO LÍQUIDO / LUCRO -->
+    <div class="col-md-4">
+        <div class="card shadow-sm @(Model.SaldoLiquido >= 0 ? "border-success bg-success text-white" : "border-danger bg-danger text-white")">
+            <div class="card-body">
+                <h6 class="text-uppercase mb-1 text-white-50">Resultado Líquido</h6>
+                <h3 class="fw-bold mb-0">@Model.SaldoLiquido.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DETALHAMENTO LADO A LADO -->
+<div class="row">
+    <!-- TABELA DE ENTRADAS -->
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white fw-bold">
+                📥 Entradas do Mês (@meses[Model.Mes])
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data</th>
+                            <th>Cliente</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Recebimentos.Any())
+                        {
+                            @foreach (var rec in Model.Recebimentos)
+                            {
+                                <tr>
+                                    <td>@(rec.DataRecebimento?.ToString("dd/MM") ?? "-")</td>
+                                    <td>@(rec.Cliente?.RazaoSocial ?? rec.Descricao)</td>
+                                    <td class="text-primary fw-bold">@rec.Valor.ToString("C")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3" class="text-center text-muted py-3">Nenhuma entrada no período.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABELA DE SAÍDAS -->
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-header bg-danger text-white fw-bold">
+                📤 Saídas do Mês (@meses[Model.Mes])
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data</th>
+                            <th>Fornecedor</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Pagamentos.Any())
+                        {
+                            @foreach (var pag in Model.Pagamentos)
+                            {
+                                <tr>
+                                    <td>@(pag.DataPagamento?.ToString("dd/MM") ?? "-")</td>
+                                    <td>@(pag.Fornecedor?.RazaoSocial ?? pag.Descricao)</td>
+                                    <td class="text-danger fw-bold">@pag.Valor.ToString("C")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3" class="text-center text-muted py-3">Nenhuma saída no período.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

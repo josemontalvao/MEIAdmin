@@ -8,6 +8,6 @@ namespace MEIAdmin.Models.ViewModels
     {
         public DateTime DataVencimento { get; set; }
         public decimal Total { get; set; }
-        public List<ContaReceber> Contas { get; set; }
+        public List<ContaReceber>? Contas { get; set; }
     }
 }

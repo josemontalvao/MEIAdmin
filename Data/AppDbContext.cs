@@ -16,6 +16,8 @@ namespace MEIAdmin.Data
         public DbSet<FornecedorProduto> FornecedoresProdutos { get; set; }
         public DbSet<ContaPagar> ContasPagar { get; set; }
         public DbSet<ContaReceber> ContasReceber { get; set; }
+        public DbSet<OrdemServico> OrdensServico { get; set; }
+        public DbSet<FotoOrdemServico> FotosOrdemServico { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

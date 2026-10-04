@@ -34,42 +34,36 @@ namespace MEIAdmin.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Bairro")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CEP")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CGC")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Cidade")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Contato")
-                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CpfCnpj")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Endereco")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Estado")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("InscEstadual")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Numero")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RazaoSocial")
@@ -77,7 +71,6 @@ namespace MEIAdmin.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Telefone")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -94,19 +87,15 @@ namespace MEIAdmin.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bairro")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CEP")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Cargo")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Cidade")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("DataContratacao")
@@ -116,27 +105,31 @@ namespace MEIAdmin.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Endereco")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Estado")
-                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Login")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Numero")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Perfil")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Senha")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Telefone")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -268,35 +261,31 @@ namespace MEIAdmin.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Bairro")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CEP")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CNPJ")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Cidade")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Contato")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Endereco")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Estado")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Numero")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RazaoSocial")
@@ -304,7 +293,6 @@ namespace MEIAdmin.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Telefone")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -329,6 +317,90 @@ namespace MEIAdmin.Migrations
                     b.ToTable("FornecedoresProdutos");
                 });
 
+            modelBuilder.Entity("MEIAdmin.Models.FotoOrdemServico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CaminhoArquivo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Legenda")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<int>("OrdemServicoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrdemServicoId");
+
+                    b.ToTable("FotosOrdemServico");
+                });
+
+            modelBuilder.Entity("MEIAdmin.Models.OrdemServico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ColaboradorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataAbertura")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataFim")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataInicio")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DescricaoProblema")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("ObservacoesTecnicas")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PecasUtilizadas")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ServicoExecutado")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal?>("TempoGastoHoras")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("TipoManutencao")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ColaboradorId");
+
+                    b.ToTable("OrdensServico");
+                });
+
             modelBuilder.Entity("MEIAdmin.Models.Produto", b =>
                 {
                     b.Property<int>("Id")
@@ -337,8 +409,10 @@ namespace MEIAdmin.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Categoria")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -428,6 +502,34 @@ namespace MEIAdmin.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("MEIAdmin.Models.FotoOrdemServico", b =>
+                {
+                    b.HasOne("MEIAdmin.Models.OrdemServico", "OrdemServico")
+                        .WithMany("Fotos")
+                        .HasForeignKey("OrdemServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrdemServico");
+                });
+
+            modelBuilder.Entity("MEIAdmin.Models.OrdemServico", b =>
+                {
+                    b.HasOne("MEIAdmin.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MEIAdmin.Models.Colaborador", "Colaborador")
+                        .WithMany()
+                        .HasForeignKey("ColaboradorId");
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Colaborador");
+                });
+
             modelBuilder.Entity("MEIAdmin.Models.Cliente", b =>
                 {
                     b.Navigation("Dispositivos");
@@ -436,6 +538,11 @@ namespace MEIAdmin.Migrations
             modelBuilder.Entity("MEIAdmin.Models.Fornecedor", b =>
                 {
                     b.Navigation("FornecedorProdutos");
+                });
+
+            modelBuilder.Entity("MEIAdmin.Models.OrdemServico", b =>
+                {
+                    b.Navigation("Fotos");
                 });
 
             modelBuilder.Entity("MEIAdmin.Models.Produto", b =>

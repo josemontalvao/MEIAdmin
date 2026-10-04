@@ -1,0 +1,136 @@
+@model MEIAdmin.Models.ViewModels.BalancoAnualViewModel
+
+@{
+    ViewData["Title"] = $"Balanço Financeiro Anual - {Model.Ano}";
+    var melhorMes = Model.Meses.Where(m => m.Entradas > 0 || m.Saidas > 0).OrderByDescending(m => m.Saldo).FirstOrDefault();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Balanço Financeiro Anual - @Model.Ano</h2>
+    <button onclick="window.print()" class="btn btn-outline-secondary">
+        🖨️ Imprimir / Salvar PDF
+    </button>
+</div>
+
+<!-- FILTRO DE ANO -->
+<div class="card mb-4 bg-light shadow-sm">
+    <div class="card-body">
+        <form method="get" asp-action="BalancoAnual" class="row g-3 align-items-end">
+            <div class="col-auto">
+                <label class="form-label fw-bold">Ano de Exercício:</label>
+                <input type="number" name="ano" class="form-control fw-bold" value="@Model.Ano" style="width: 130px;" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">🔍 Consultar Ano</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- OS 3 CARDS DO DASHBOARD ANUAL -->
+<div class="row mb-4">
+    <!-- TOTAL ENTRADAS DO ANO -->
+    <div class="col-md-4">
+        <div class="card border-primary shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase mb-1">Faturamento Anual (Entradas)</h6>
+                <h3 class="fw-bold text-primary mb-0">+ @Model.TotalRecebidoAno.ToString("C")</h3>
+                <small class="text-muted">Total faturado e recebido em @Model.Ano</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOTAL SAÍDAS DO ANO -->
+    <div class="col-md-4">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase mb-1">Despesas Anuais (Saídas)</h6>
+                <h3 class="fw-bold text-danger mb-0">- @Model.TotalPagoAno.ToString("C")</h3>
+                <small class="text-muted">Total de compras e contas pagas em @Model.Ano</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- LUCRO LÍQUIDO DO ANO -->
+    <div class="col-md-4">
+        <div class="card shadow-sm @(Model.SaldoLiquidoAno >= 0 ? "border-success bg-success text-white" : "border-danger bg-danger text-white")">
+            <div class="card-body">
+                <h6 class="text-uppercase mb-1 text-white-50">Resultado Líquido do Ano</h6>
+                <h3 class="fw-bold mb-0">@Model.SaldoLiquidoAno.ToString("C")</h3>
+                <small class="text-white-50">Lucro real acumulado no período</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (melhorMes != null && melhorMes.Saldo > 0)
+{
+    <div class="alert alert-success d-flex align-items-center mb-4 shadow-sm" role="alert">
+        <span class="fs-4 me-2">🏆</span>
+        <div>
+            <strong>Mês Mais Lucrativo do Ano:</strong> @melhorMes.MesNome com saldo líquido positivo de <strong>@melhorMes.Saldo.ToString("C")</strong>!
+        </div>
+    </div>
+}
+
+<!-- TABELA CONSOLIDADA MÊS A MÊS (JANEIRO A DEZEMBRO) -->
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white fw-bold">
+        📅 Demonstrativo Mensal Consolidado (DRE do Exercício de @Model.Ano)
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Mês</th>
+                    <th>Entradas (Recebido)</th>
+                    <th>Saídas (Pago)</th>
+                    <th>Resultado Líquido</th>
+                    <th>Situação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var mes in Model.Meses)
+                {
+                    <tr>
+                        <td class="fw-bold">@mes.MesNome</td>
+                        <td class="text-primary fw-bold">@mes.Entradas.ToString("C")</td>
+                        <td class="text-danger fw-bold">@mes.Saidas.ToString("C")</td>
+                        <td class="fw-bold @(mes.Saldo >= 0 ? "text-success" : "text-danger")">
+                            @mes.Saldo.ToString("C")
+                        </td>
+                        <td>
+                            @if (mes.Entradas == 0 && mes.Saidas == 0)
+                            {
+                                <span class="badge bg-secondary">Sem movimento</span>
+                            }
+                            else if (mes.Saldo >= 0)
+                            {
+                                <span class="badge bg-success">Lucro</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Prejuízo</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="table-dark">
+                <tr>
+                    <th class="text-uppercase">Total Anual Acumulado:</th>
+                    <th class="text-primary">@Model.TotalRecebidoAno.ToString("C")</th>
+                    <th class="text-danger">@Model.TotalPagoAno.ToString("C")</th>
+                    <th class="@(Model.SaldoLiquidoAno >= 0 ? "text-success" : "text-danger") fs-5">
+                        @Model.SaldoLiquidoAno.ToString("C")
+                    </th>
+                    <th>
+                        <span class="badge @(Model.SaldoLiquidoAno >= 0 ? "bg-success" : "bg-danger") fs-6">
+                            @(Model.SaldoLiquidoAno >= 0 ? "ANO POSITIVO" : "ANO NEGATIVO")
+                        </span>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

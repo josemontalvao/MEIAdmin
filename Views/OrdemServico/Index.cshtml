@@ -1,0 +1,69 @@
+@model IEnumerable<MEIAdmin.Models.OrdemServico>
+
+@{
+    ViewData["Title"] = "Ordens de Serviço";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📋 Painel de Ordens de Serviço (O.S.)</h2>
+    <a asp-action="Create" class="btn btn-primary btn-lg">
+        ➕ Nova O.S. (Despachar)
+    </a>
+</div>
+
+<table class="table table-striped table-hover align-middle mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Nº O.S.</th>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Técnico</th>
+            <th>Tipo</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var os in Model)
+            {
+                <tr>
+                    <td class="fw-bold fs-5 text-primary">#@os.Id</td>
+                    <td>@os.DataAbertura.ToString("dd/MM/yyyy")</td>
+                    <td class="fw-bold">@(os.Cliente?.RazaoSocial ?? "N/A")</td>
+                    <td>@(os.Colaborador?.Nome ?? "A Definir")</td>
+                    <td>
+                        <span class="badge bg-light text-dark border">@os.TipoManutencao</span>
+                    </td>
+                    <td>
+                        @if (os.Status == "Concluída")
+                        {
+                            <span class="badge bg-success fs-6">Concluída</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark fs-6">@(os.Status ?? "Pendente")</span>
+                        }
+                    </td>
+                    <td>
+                        @if (os.Status != "Concluída")
+                        {
+                            <a asp-action="Atender" asp-route-id="@os.Id" class="btn btn-success btn-sm fw-bold">🛠️ Atender</a>
+                        }
+                        <a asp-action="Details" asp-route-id="@os.Id" class="btn btn-info btn-sm text-white">Ver Laudo</a>
+                        <a asp-action="Delete" asp-route-id="@os.Id" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted fs-5">
+                    Nenhuma Ordem de Serviço cadastrada.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

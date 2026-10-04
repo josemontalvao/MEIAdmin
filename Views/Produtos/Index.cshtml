@@ -10,11 +10,11 @@
     <a asp-action="Create" class="btn btn-primary">Adicionar Produto</a>
 </p>
 
-<table class="table table-striped">
-    <thead>
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
         <tr>
             <th>Nome</th>
-            <th>Quantidade</th>
+            <th>Estoque</th>
             <th>Preço de Compra</th>
             <th>Preço de Venda</th>
             <th>Categoria</th>
@@ -26,27 +26,41 @@
         @foreach (var produto in Model)
         {
             <tr>
-                <td>@produto.Nome</td>
-                <td>@produto.Quantidade</td>
+                <td class="fw-bold">@produto.Nome</td>
+                <td>
+                    @if (produto.Quantidade > 0)
+                    {
+                        <span class="badge bg-success fs-6">@produto.Quantidade @(produto.UnidadeMedida ?? "")</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary fs-6">Esgotado (0)</span>
+                    }
+                </td>
                 <td>@produto.PrecoCompra.ToString("C")</td>
                 <td>@produto.PrecoVenda.ToString("C")</td>
-                <td>@produto.Categoria</td>
+                <td>@(produto.Categoria ?? "-")</td>
                 <td>
                     @if (produto.FornecedorProdutos != null && produto.FornecedorProdutos.Any())
                     {
-                        <ul>
+                        <ul class="mb-0 ps-3">
                             @foreach (var fornecedorProduto in produto.FornecedorProdutos)
                             {
-                                <li>@fornecedorProduto.Fornecedor.RazaoSocial</li>
+                                <li>@fornecedorProduto.Fornecedor?.RazaoSocial</li>
                             }
                         </ul>
                     }
                     else
                     {
-                        <span>Sem fornecedores</span>
+                        <span class="text-muted">Sem fornecedores</span>
                     }
                 </td>
                 <td>
+                    <!-- BOTÃO NOVO DE BAIXA / SAÍDA -->
+                    @if (produto.Quantidade > 0)
+                    {
+                        <a asp-action="Baixa" asp-route-id="@produto.Id" class="btn btn-secondary btn-sm">Dar Baixa</a>
+                    }
                     <a asp-action="Edit" asp-route-id="@produto.Id" class="btn btn-warning btn-sm">Editar</a>
                     <a asp-action="Details" asp-route-id="@produto.Id" class="btn btn-info btn-sm">Detalhes</a>
                     <form asp-action="Delete" asp-route-id="@produto.Id" method="post" class="d-inline">

@@ -1,0 +1,68 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Login do Técnico - Smart Control";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Control - Área do Técnico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #003366 0%, #0055aa 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .card-login {
+            border-radius: 15px;
+            max-width: 420px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="card card-login shadow-lg border-0 p-4 bg-white text-center">
+        <div class="mb-3">
+            <h3 class="fw-bold text-primary mb-0">SMART CONTROL</h3>
+            <small class="text-muted fw-bold">PORTAL DO TÉCNICO DE CAMPO</small>
+        </div>
+
+        @if (ViewBag.Erro != null)
+        {
+            <div class="alert alert-danger py-2 text-start small">
+                ⚠️ @ViewBag.Erro
+            </div>
+        }
+
+        <form asp-action="Login" method="post" class="text-start mt-2">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group mb-3">
+                <label class="form-label fw-bold text-dark">Usuário / Login:</label>
+                <input type="text" name="login" class="form-control form-control-lg" placeholder="Ex: alan" required autofocus />
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="form-label fw-bold text-dark">Senha:</label>
+                <input type="password" name="senha" class="form-control form-control-lg" placeholder="Digite sua senha" required />
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow">
+                    🚀 Entrar no Aplicativo
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-4 pt-2 border-top text-muted small">
+            Smart Control Systemas Ltda. &copy; @DateTime.Now.Year
+        </div>
+    </div>
+</body>
+</html>

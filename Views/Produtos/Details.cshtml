@@ -32,7 +32,7 @@
                 <ul>
                     @foreach (var fornecedorProduto in Model.FornecedorProdutos)
                     {
-                        <li>@fornecedorProduto.Fornecedor.RazaoSocial</li>
+                        <li>@fornecedorProduto.Fornecedor?.RazaoSocial</li>
                     }
                 </ul>
             }

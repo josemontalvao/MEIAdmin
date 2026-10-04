@@ -17,10 +17,11 @@ namespace MEIAdmin.Controllers
             _context = context;
         }
 
-        // GET: Produtos
+        // GET: Produtos (Apenas produtos ATIVOS são exibidos na tela)
         public async Task<IActionResult> Index()
         {
             var produtos = await _context.Produtos
+                .Where(p => p.Ativo) // <-- FILTRO DE OURO: Oculta os inativos/excluídos!
                 .Include(p => p.FornecedorProdutos)
                 .ThenInclude(fp => fp.Fornecedor)
                 .ToListAsync();
@@ -31,20 +32,14 @@ namespace MEIAdmin.Controllers
         // GET: Produtos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var produto = await _context.Produtos
                 .Include(p => p.FornecedorProdutos)
                 .ThenInclude(fp => fp.Fornecedor)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            if (produto == null) return NotFound();
 
             return View(produto);
         }
@@ -63,6 +58,7 @@ namespace MEIAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                produto.Ativo = true; // Todo produto novo nasce ativo
                 _context.Add(produto);
                 await _context.SaveChangesAsync();
 
@@ -88,18 +84,12 @@ namespace MEIAdmin.Controllers
         // GET: Produtos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var produto = await _context.Produtos.Include(p => p.FornecedorProdutos)
                                                  .ThenInclude(fp => fp.Fornecedor)
                                                  .FirstOrDefaultAsync(p => p.Id == id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            if (produto == null) return NotFound();
 
             ViewBag.Fornecedores = new SelectList(_context.Fornecedores, "Id", "RazaoSocial");
             return View(produto);
@@ -110,10 +100,7 @@ namespace MEIAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Quantidade,PrecoCompra,MargemLucro,DataCompra,UnidadeMedida,Categoria,UsadoInternamente")] Produto produto, int[]? FornecedorIds)
         {
-            if (id != produto.Id)
-            {
-                return NotFound();
-            }
+            if (id != produto.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -122,7 +109,6 @@ namespace MEIAdmin.Controllers
                     _context.Update(produto);
                     await _context.SaveChangesAsync();
 
-                    // Remove os fornecedores atuais do produto e adiciona os novos
                     var fornecedoresAtuais = _context.FornecedoresProdutos.Where(fp => fp.ProdutoId == produto.Id);
                     _context.FornecedoresProdutos.RemoveRange(fornecedoresAtuais);
 
@@ -141,14 +127,8 @@ namespace MEIAdmin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!ProdutoExists(produto.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -157,28 +137,64 @@ namespace MEIAdmin.Controllers
             return View(produto);
         }
 
+        // ==========================================
+        // BAIXA DE ESTOQUE (ALMOXARIFADO)
+        // ==========================================
+
+        // GET: Produtos/Baixa/5
+        public async Task<IActionResult> Baixa(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var produto = await _context.Produtos.FindAsync(id);
+            if (produto == null) return NotFound();
+
+            return View(produto);
+        }
+
+        // POST: Produtos/Baixa/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Baixa(int id, int quantidadeBaixa, string? motivo)
+        {
+            var produto = await _context.Produtos.FindAsync(id);
+            if (produto == null) return NotFound();
+
+            if (quantidadeBaixa <= 0)
+            {
+                ModelState.AddModelError("", "A quantidade para retirar deve ser maior que zero.");
+                return View(produto);
+            }
+
+            if (quantidadeBaixa > produto.Quantidade)
+            {
+                ModelState.AddModelError("", $"Quantidade insuficiente! O estoque atual é de apenas {produto.Quantidade} {produto.UnidadeMedida ?? "unidades"}.");
+                return View(produto);
+            }
+
+            produto.Quantidade -= quantidadeBaixa;
+            _context.Update(produto);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Produtos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var produto = await _context.Produtos
                 .Include(p => p.FornecedorProdutos)
                 .ThenInclude(fp => fp.Fornecedor)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            if (produto == null) return NotFound();
 
             return View(produto);
         }
 
-        // POST: Produtos/Delete/5
+        // POST: Produtos/Delete/5 (EXCLUSÃO INTELIGENTE / SOFT DELETE)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -186,7 +202,9 @@ namespace MEIAdmin.Controllers
             var produto = await _context.Produtos.FindAsync(id);
             if (produto != null)
             {
-                _context.Produtos.Remove(produto);
+                // Em vez de deletar fisicamente, marca como inativo!
+                produto.Ativo = false;
+                _context.Update(produto);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

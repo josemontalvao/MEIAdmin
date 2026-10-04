@@ -1,0 +1,104 @@
+@model IEnumerable<MEIAdmin.Models.OrdemServico>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Minhas Ordens de Serviço";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Control - Minhas O.S.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+
+    <!-- BARRA SUPERIOR DO TÉCNICO (SEM MENUS FINANCEIROS!) -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-3">
+        <div class="container-fluid d-flex justify-content-between">
+            <span class="navbar-brand fw-bold mb-0">
+                🛠️ Smart Control
+            </span>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3 small d-none d-sm-inline">Olá, <strong>@ViewBag.NomeTecnico</strong></span>
+                <a asp-action="Sair" class="btn btn-danger btn-sm">🚪 Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold mb-0 text-dark">Minhas O.S. Atribuídas</h5>
+                <small class="text-muted">Técnico: @ViewBag.NomeTecnico</small>
+            </div>
+            <span class="badge bg-primary fs-6">@Model.Count() O.S.</span>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var os in Model)
+            {
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                        <span class="fw-bold fs-5 text-primary">O.S. #@os.Id</span>
+                        <div>
+                            <span class="badge bg-light text-dark border me-1">@os.TipoManutencao</span>
+                            @if (os.Status == "Concluída")
+                            {
+                                <span class="badge bg-success">Concluída</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">@(os.Status ?? "Pendente")</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="fw-bold text-dark mb-1">🏢 @(os.Cliente?.RazaoSocial ?? "Cliente não informado")</h6>
+                        
+                        <p class="text-muted small mb-2">
+                            📍 @(os.Cliente?.Endereco), @(os.Cliente?.Numero) - @(os.Cliente?.Bairro) - @(os.Cliente?.Cidade)<br/>
+                            📞 Contato: @(os.Cliente?.Contato) - 
+                            @if (!string.IsNullOrEmpty(os.Cliente?.Telefone))
+                            {
+                                <a href="tel:@os.Cliente.Telefone" class="text-decoration-none fw-bold">📞 Ligar (@os.Cliente.Telefone)</a>
+                            }
+                        </p>
+
+                        <div class="p-2 bg-light rounded border mb-3">
+                            <strong class="d-block small text-primary">Instrução do Serviço:</strong>
+                            <span class="text-dark small">@os.DescricaoProblema</span>
+                        </div>
+
+                        <!-- BOTÃO DE AÇÃO -->
+                        @if (os.Status != "Concluída")
+                        {
+                            <a href="/OrdemServico/Atender/@os.Id" class="btn btn-success btn-lg w-100 fw-bold py-2 shadow-sm">
+                                🛠️ Iniciar / Atender Chamado
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/OrdemServico/Details/@os.Id" class="btn btn-outline-info w-100 fw-bold">
+                                📄 Ver Laudo Concluído
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card p-4 text-center border-0 shadow-sm">
+                <span class="fs-1 mb-2">🎉</span>
+                <h5 class="fw-bold">Nenhum chamado pendente!</h5>
+                <p class="text-muted mb-0 small">Você não tem Ordens de Serviço atribuídas para você no momento.</p>
+            </div>
+        }
+    </div>
+
+</body>
+</html>

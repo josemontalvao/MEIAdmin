@@ -1,0 +1,91 @@
+@model IEnumerable<MEIAdmin.Models.ContaPagar>
+
+@{
+    ViewData["Title"] = "Relatório de Contas Pagas";
+
+    var meses = new Dictionary<int, string>
+    {
+        { 0, "Todos os Meses" },
+        { 1, "Janeiro" }, { 2, "Fevereiro" }, { 3, "Março" }, { 4, "Abril" },
+        { 5, "Maio" }, { 6, "Junho" }, { 7, "Julho" }, { 8, "Agosto" },
+        { 9, "Setembro" }, { 10, "Outubro" }, { 11, "Novembro" }, { 12, "Dezembro" }
+    };
+
+    int mesAtual = ViewBag.MesSelecionado ?? 0;
+    int anoAtual = ViewBag.AnoSelecionado ?? DateTime.Now.Year;
+    string tituloPeriodo = mesAtual > 0 ? $"{meses[mesAtual]} de {anoAtual}" : "Geral (Todos os Períodos)";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Relatório de Contas Pagas</h2>
+    <button onclick="window.print()" class="btn btn-outline-secondary">
+        🖨️ Imprimir / Salvar PDF
+    </button>
+</div>
+
+<!-- FILTRO DE MÊS E ANO -->
+<div class="card mb-4 bg-light shadow-sm">
+    <div class="card-body">
+        <form method="get" asp-action="ContasPagas" class="row g-3 align-items-end">
+            <div class="col-auto">
+                <label class="form-label fw-bold">Mês:</label>
+                <select name="mes" class="form-select">
+                    @foreach (var m in meses)
+                    {
+                        <option value="@m.Key" selected="@(m.Key == mesAtual ? "selected" : null)">
+                            @m.Value
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label fw-bold">Ano:</label>
+                <input type="number" name="ano" class="form-control" value="@anoAtual" style="width: 110px;" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="card mb-4 border-success">
+        <div class="card-body bg-light">
+            <h5 class="card-title text-success mb-1">Total Pago - @tituloPeriodo</h5>
+            <h3 class="fw-bold text-success mb-0">@Model.Sum(c => c.Valor).ToString("C")</h3>
+            <small class="text-muted">Soma de todas as contas quitadas no período selecionado</small>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Data Pagto</th>
+                <th>Descrição</th>
+                <th>Fornecedor</th>
+                <th>Vencimento</th>
+                <th>Valor Pago</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var conta in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@(conta.DataPagamento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                    <td>@conta.Descricao</td>
+                    <td>@(conta.Fornecedor?.RazaoSocial ?? "N/A")</td>
+                    <td>@conta.DataVencimento.ToString("dd/MM/yyyy")</td>
+                    <td class="text-success fw-bold">@conta.Valor.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-3">
+        Nenhuma conta paga encontrada para <strong>@tituloPeriodo</strong>.
+    </div>
+}

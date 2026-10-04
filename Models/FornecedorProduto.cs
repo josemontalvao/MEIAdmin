@@ -7,10 +7,10 @@ namespace MEIAdmin.Models
     {
         [Key, Column(Order = 1)]
         public int FornecedorId { get; set; }
-        public Fornecedor Fornecedor { get; set; }
+        public Fornecedor? Fornecedor { get; set; }
 
         [Key, Column(Order = 2)]
         public int ProdutoId { get; set; }
-        public Produto Produto { get; set; }
+        public Produto? Produto { get; set; }
     }
 }

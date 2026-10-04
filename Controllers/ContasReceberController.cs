@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MEIAdmin.Data;
 using MEIAdmin.Models;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -18,11 +19,12 @@ namespace MEIAdmin.Controllers
             _context = context;
         }
 
-        // GET: ContasReceber
+        // GET: ContasReceber (Ordenado por data de vencimento)
         public async Task<IActionResult> Index()
         {
             var contasReceber = await _context.ContasReceber
                 .Include(c => c.Cliente)
+                .OrderBy(c => c.DataVencimento) // <-- Ordena cronologicamente
                 .ToListAsync();
             return View("Index", contasReceber);
         }
@@ -34,10 +36,10 @@ namespace MEIAdmin.Controllers
             return View();
         }
 
-        // POST: ContasReceber/Create
+        // POST: ContasReceber/Create (COM GERADOR AUTOMÁTICO DE PARCELAS)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,Valor,DataVencimento,DataRecebimento,Status,ClienteId")] ContaReceber contaReceber)
+        public async Task<IActionResult> Create([Bind("Id,Descricao,Valor,DataVencimento,DataRecebimento,Status,ClienteId")] ContaReceber contaReceber, int parcelas = 1)
         {
             if (!ModelState.IsValid)
             {
@@ -45,7 +47,45 @@ namespace MEIAdmin.Controllers
                 return View(contaReceber);
             }
 
-            _context.Add(contaReceber);
+            // Se for parcela única (à vista)
+            if (parcelas <= 1)
+            {
+                _context.Add(contaReceber);
+            }
+            else
+            {
+                // Se for parcelado, gera todas as parcelas automaticamente
+                decimal valorTotal = contaReceber.Valor;
+                decimal valorParcelaBase = Math.Round(valorTotal / parcelas, 2);
+                string statusOriginal = contaReceber.Status ?? "Pendente";
+                DateTime? dataRecebtoOriginal = contaReceber.DataRecebimento;
+
+                for (int i = 1; i <= parcelas; i++)
+                {
+                    // Ajusta a diferença de centavos na última parcela
+                    decimal valorAtual = (i == parcelas) 
+                        ? (valorTotal - (valorParcelaBase * (parcelas - 1))) 
+                        : valorParcelaBase;
+
+                    // Se marcou como "Recebido", apenas a 1ª parcela fica recebida (sinal/entrada)
+                    // As parcelas futuras já nascem como "Pendente"
+                    string statusParcela = (i == 1 && statusOriginal == "Recebido") ? "Recebido" : "Pendente";
+                    DateTime? dataRecebtoParcela = (i == 1 && statusOriginal == "Recebido") ? dataRecebtoOriginal : null;
+
+                    var novaParcela = new ContaReceber
+                    {
+                        ClienteId = contaReceber.ClienteId,
+                        Descricao = $"{contaReceber.Descricao} (Parcela {i}/{parcelas})",
+                        Valor = valorAtual,
+                        DataVencimento = contaReceber.DataVencimento.AddMonths(i - 1),
+                        DataRecebimento = dataRecebtoParcela,
+                        Status = statusParcela
+                    };
+
+                    _context.Add(novaParcela);
+                }
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -120,3 +160,4 @@ namespace MEIAdmin.Controllers
         }
     }
 }
+

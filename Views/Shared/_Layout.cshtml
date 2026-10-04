@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    // BLINDAGEM DE SEGURANÇA: Se não estiver logado como Admin, expulsa para o Login!
+    var perfilUsuario = Context.Session.GetString("UsuarioPerfil");
+    var nomeUsuario = Context.Session.GetString("UsuarioNome");
+
+    if (string.IsNullOrEmpty(perfilUsuario) || perfilUsuario != "Admin")
+    {
+        Context.Response.Redirect("/Tecnico/Login");
+    }
+}
+
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -8,15 +21,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SmartControl</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">SmartControl</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Home" asp-action="Index">Início</a>
                     </li>
@@ -41,18 +54,49 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="ContasReceber" asp-action="Index">Contas a Receber</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-warning" asp-controller="OrdemServico" asp-action="Index">📋 O.S.</a>
+                    </li>
+                    
+                    <!-- RELATÓRIOS -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Relatórios
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasPagarPendentes">Contas a Pagar</a></li>
-                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasReceberPendentes">Contas a Receber</a></li>
-                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ProdutosEmEstoque">Produtos</a></li>
-                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="Colaboradores">Colaboradores</a></li>
+                        <ul class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
+                            <li><h6 class="dropdown-header text-uppercase">Contas a Pagar</h6></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasPagarPendentes">⏳ Pendentes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasPagas">✅ Pagas (Quitadas)</a></li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li><h6 class="dropdown-header text-uppercase">Contas a Receber</h6></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasReceberPendentes">⏳ Pendentes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ContasRecebidas">📥 Recebidas</a></li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li><h6 class="dropdown-header text-uppercase">Fechamento</h6></li>
+                            <li><a class="dropdown-item fw-bold text-primary" asp-controller="Relatorios" asp-action="BalancoMensal">📊 Balanço Mensal</a></li>
+                            <li><a class="dropdown-item fw-bold text-success" asp-controller="Relatorios" asp-action="BalancoAnual">📈 Balanço Anual</a></li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li><h6 class="dropdown-header text-uppercase">Estoque</h6></li>
+                            <li><a class="dropdown-item" asp-controller="Relatorios" asp-action="ProdutosEmEstoque">📦 Produtos em Estoque</a></li>
                         </ul>
                     </li>
                 </ul>
+
+                <!-- IDENTIFICAÇÃO DO USUÁRIO E BOTÃO SAIR -->
+                <div class="d-flex align-items-center">
+                    <span class="text-white me-3 small">
+                        👤 <strong>@nomeUsuario</strong> <span class="badge bg-warning text-dark">Admin</span>
+                    </span>
+                    <a asp-controller="Tecnico" asp-action="Sair" class="btn btn-outline-light btn-sm fw-bold">
+                        🚪 Sair
+                    </a>
+                </div>
             </div>
         </div>
     </nav>

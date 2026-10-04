@@ -1,0 +1,67 @@
+@model MEIAdmin.Models.OrdemServico
+
+@{
+    ViewData["Title"] = "Nova Ordem de Serviço (Despacho)";
+}
+
+<div class="container mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📋 Despachar Nova Ordem de Serviço</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                <!-- CLIENTE E TÉCNICO -->
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="ClienteId" class="form-label fw-bold">Cliente</label>
+                        <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.Clientes" required>
+                            <option value="">Selecione o Cliente</option>
+                        </select>
+                        <span asp-validation-for="ClienteId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="ColaboradorId" class="form-label fw-bold">Técnico Responsável</label>
+                        <select asp-for="ColaboradorId" class="form-select" asp-items="ViewBag.Colaboradores">
+                            <option value="">Selecione o Técnico</option>
+                        </select>
+                        <span asp-validation-for="ColaboradorId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- TIPO E DATA DE ABERTURA -->
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="TipoManutencao" class="form-label fw-bold">Tipo de Serviço</label>
+                        <select asp-for="TipoManutencao" class="form-select">
+                            <option value="Preventiva">Preventiva (Contrato / Revisão)</option>
+                            <option value="Corretiva">Corretiva (Reparo / Defeito)</option>
+                            <option value="Instalação">Nova Instalação</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="DataAbertura" class="form-label fw-bold">Data de Abertura / Despacho</label>
+                        <input asp-for="DataAbertura" class="form-control" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="DataAbertura" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- INSTRUÇÕES PARA O TÉCNICO -->
+                <div class="form-group mb-4">
+                    <label asp-for="DescricaoProblema" class="form-label fw-bold">Instruções / Defeito Relatado (O que fazer no cliente)</label>
+                    <textarea asp-for="DescricaoProblema" class="form-control" rows="4" placeholder="Ex: Câmera do portão sem sinal. Verificar fonte 12V, conectores BNC e testar cabeamento." required></textarea>
+                    <span asp-validation-for="DescricaoProblema" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg px-4 fw-bold">🚀 Despachar O.S.</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+@model MEIAdmin.Models.Produto
+
+@{
+    ViewData["Title"] = "Dar Baixa no Estoque";
+}
+
+<div class="container mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0">📉 Saída de Material / Dar Baixa no Estoque</h4>
+        </div>
+        <div class="card-body p-4">
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <!-- RESUMO DO PRODUTO -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold mb-3">@Model.Nome</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="text-muted d-block">Estoque Atual:</span>
+                            <span class="badge bg-success fs-5">@Model.Quantidade @(Model.UnidadeMedida ?? "un")</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="text-muted d-block">Categoria:</span>
+                            <strong>@(Model.Categoria ?? "Geral")</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="text-muted d-block">Classificação:</span>
+                            <strong>@(Model.UsadoInternamente ? "Uso Interno / EPI" : "Venda / Cliente")</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULÁRIO DE BAIXA -->
+            <form asp-action="Baixa" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label class="form-label fw-bold">Quantidade a Retirar:</label>
+                        <input type="number" name="quantidadeBaixa" class="form-control form-control-lg" min="1" max="@Model.Quantidade" value="1" required />
+                        <small class="text-muted">Quantos itens estão saindo da prateleira agora?</small>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label class="form-label fw-bold">Destino / Motivo da Saída:</label>
+                        <input type="text" name="motivo" class="form-control form-control-lg" placeholder="Ex: Obra do Beto (cabos e conectores), Entrega EPI João, Uso bancada" />
+                        <small class="text-muted">Anotação rápida de onde o material foi aplicado.</small>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-warning btn-lg px-4 fw-bold">Confirmar Saída</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

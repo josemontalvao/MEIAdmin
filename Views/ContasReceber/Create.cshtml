@@ -4,55 +4,117 @@
     ViewData["Title"] = "Nova Conta a Receber";
 }
 
-<h2>Nova Conta a Receber</h2>
+<div class="container mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📥 Nova Conta a Receber (À Vista ou Parcelada)</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post" novalidate>
+                @Html.AntiForgeryToken()
 
-<form asp-action="Create" method="post" novalidate>
-    @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
 
-    <div class="form-group">
-        <label asp-for="Descricao" class="control-label"></label>
-        <input asp-for="Descricao" class="form-control" />
-        <span asp-validation-for="Descricao" class="text-danger"></span>
+                <!-- CLIENTE E DESCRIÇÃO -->
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="ClienteId" class="form-label fw-bold">Cliente</label>
+                        <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.Clientes" required>
+                            <option value="">Selecione um Cliente</option>
+                        </select>
+                        <span asp-validation-for="ClienteId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Descricao" class="form-label fw-bold">Descrição do Serviço / Contrato</label>
+                        <input asp-for="Descricao" class="form-control" placeholder="Ex: Instalação CFTV e Alarme" required />
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- VALOR TOTAL E PARCELAS -->
+                <div class="row bg-light p-3 rounded border mb-3">
+                    <div class="col-md-4 form-group mb-2">
+                        <label asp-for="Valor" class="form-label fw-bold text-primary">Valor Total R$</label>
+                        <input asp-for="Valor" id="inputValorTotal" class="form-control form-control-lg fw-bold" type="number" step="0.01" placeholder="0,00" required />
+                        <span asp-validation-for="Valor" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-2">
+                        <label class="form-label fw-bold text-primary">Número de Parcelas</label>
+                        <input type="number" name="parcelas" id="inputParcelas" class="form-control form-control-lg fw-bold" value="1" min="1" max="60" required />
+                        <small class="text-muted">1 = À vista | 2 ou mais = Parcelado</small>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-2">
+                        <label class="form-label fw-bold text-success">Resumo das Parcelas</label>
+                        <div id="boxResumoParcelas" class="alert alert-success py-2 mb-0 fw-bold text-center">
+                            1x de R$ 0,00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATAS E STATUS -->
+                <div class="row">
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="DataVencimento" class="form-label fw-bold">Data do 1º Vencimento</label>
+                        <input asp-for="DataVencimento" id="inputVencimento" class="form-control" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="DataVencimento" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="DataRecebimento" class="form-label fw-bold">Data de Recebimento (se já recebeu sinal)</label>
+                        <input asp-for="DataRecebimento" class="form-control" type="date" />
+                        <span asp-validation-for="DataRecebimento" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group mb-3">
+                        <label asp-for="Status" class="form-label fw-bold">Status Inicial</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Pendente">Pendente</option>
+                            <option value="Recebido">Recebido (Sinal / Pago)</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary px-4 btn-lg">Salvar e Gerar Contas</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Valor" class="control-label"></label>
-        <input asp-for="Valor" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Valor" class="text-danger"></span>
-    </div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
-    <div class="form-group">
-        <label asp-for="DataVencimento" class="control-label"></label>
-        <input asp-for="DataVencimento" class="form-control" type="date" />
-        <span asp-validation-for="DataVencimento" class="text-danger"></span>
-    </div>
+    <script>
+        const inputValor = document.getElementById('inputValorTotal');
+        const inputParcelas = document.getElementById('inputParcelas');
+        const boxResumo = document.getElementById('boxResumoParcelas');
 
-    <div class="form-group">
-        <label asp-for="DataRecebimento" class="control-label"></label>
-        <input asp-for="DataRecebimento" class="form-control" type="date" />
-        <span asp-validation-for="DataRecebimento" class="text-danger"></span>
-    </div>
+        function atualizarResumo() {
+            const total = parseFloat(inputValor.value) || 0;
+            const qtd = parseInt(inputParcelas.value) || 1;
 
-    <div class="form-group">
-        <label asp-for="Status" class="control-label"></label>
-        <select asp-for="Status" class="form-control" name="Status">
-            <option value="Pendente">Pendente</option>
-            <option value="Recebido">Recebido</option>
-            <option value="Atrasado">Atrasado</option>
-        </select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
+            if (total > 0 && qtd > 0) {
+                const valorParcela = total / qtd;
+                const valorFormatado = valorParcela.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                
+                if (qtd === 1) {
+                    boxResumo.innerHTML = `À vista: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                } else {
+                    boxResumo.innerHTML = `${qtd}x de ${valorFormatado} / mês`;
+                }
+            } else {
+                boxResumo.innerHTML = "1x de R$ 0,00";
+            }
+        }
 
-    <div class="form-group">
-        <label asp-for="ClienteId" class="control-label">Cliente</label>
-        <select asp-for="ClienteId" class="form-control" asp-items="@(new SelectList(ViewBag.Clientes, "Id", "RazaoSocial"))">
-            <option value="">Selecione um Cliente</option>
-        </select>
-        <span asp-validation-for="ClienteId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mt-3">
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>
+        inputValor.addEventListener('input', atualizarResumo);
+        inputParcelas.addEventListener('input', atualizarResumo);
+        atualizarResumo();
+    </script>
+}
