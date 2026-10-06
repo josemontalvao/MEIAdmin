@@ -80,7 +80,7 @@ namespace MEIAdmin.Controllers
             return View(os);
         }
 
-        // POST: OrdemServico/Atender/5 (RECEBE FOTOS ILIMITADAS E ASSINATURA DIGITAL)
+        // POST: OrdemServico/Atender/5 (GRAVA FOTOS E ASSINATURA DIRETO NO BANCO DE DADOS!)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Atender(int id, DateTime dataInicio, DateTime dataFim, string servicoExecutado, string pecasUtilizadas, string observacoesTecnicas, List<IFormFile> fotos, List<string> legendas, string? assinaturaBase64)
@@ -99,27 +99,13 @@ namespace MEIAdmin.Controllers
             os.ObservacoesTecnicas = observacoesTecnicas;
             os.Status = "Concluída";
 
-            string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "os");
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-
-            // 1. Salva a assinatura digital desenhada com o dedo
-            if (!string.IsNullOrWhiteSpace(assinaturaBase64) && assinaturaBase64.Contains(","))
+            // 1. Grava a Assinatura Digital DIRETO no banco de dados
+            if (!string.IsNullOrWhiteSpace(assinaturaBase64))
             {
-                try
-                {
-                    string base64Limpo = assinaturaBase64.Split(',')[1];
-                    byte[] bytesAssinatura = Convert.FromBase64String(base64Limpo);
-                    string arquivoAssinatura = Path.Combine(uploadPath, $"assinatura_{id}.png");
-                    await System.IO.File.WriteAllBytesAsync(arquivoAssinatura, bytesAssinatura);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Erro ao salvar assinatura: {ex.Message}");
-                }
+                os.AssinaturaClienteBase64 = assinaturaBase64;
             }
 
-            // 2. Salva as fotos dinâmicas
+            // 2. Grava as Fotos DIRETO no banco de dados (em formato Base64)
             if (fotos != null && fotos.Count > 0)
             {
                 for (int i = 0; i < fotos.Count; i++)
@@ -127,25 +113,24 @@ namespace MEIAdmin.Controllers
                     var file = fotos[i];
                     if (file.Length > 0)
                     {
-                        string ext = Path.GetExtension(file.FileName);
-                        string fileName = $"OS_{id}_{Guid.NewGuid().ToString().Substring(0, 8)}{ext}";
-                        string filePath = Path.Combine(uploadPath, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var ms = new MemoryStream())
                         {
-                            await file.CopyToAsync(stream);
+                            await file.CopyToAsync(ms);
+                            var bytesFoto = ms.ToArray();
+                            string formato = string.IsNullOrEmpty(file.ContentType) ? "image/jpeg" : file.ContentType;
+                            string fotoBase64 = $"data:{formato};base64,{Convert.ToBase64String(bytesFoto)}";
+
+                            string legenda = (legendas != null && i < legendas.Count && !string.IsNullOrWhiteSpace(legendas[i]))
+                                ? legendas[i]
+                                : $"Evidência {i + 1}";
+
+                            _context.FotosOrdemServico.Add(new FotoOrdemServico
+                            {
+                                OrdemServicoId = id,
+                                CaminhoArquivo = fotoBase64, // FOTO GUARDADA NO BANCO!
+                                Legenda = legenda
+                            });
                         }
-
-                        string legenda = (legendas != null && i < legendas.Count && !string.IsNullOrWhiteSpace(legendas[i]))
-                            ? legendas[i]
-                            : $"Evidência {i + 1}";
-
-                        _context.FotosOrdemServico.Add(new FotoOrdemServico
-                        {
-                            OrdemServicoId = id,
-                            CaminhoArquivo = $"/uploads/os/{fileName}",
-                            Legenda = legenda
-                        });
                     }
                 }
             }
@@ -156,7 +141,7 @@ namespace MEIAdmin.Controllers
             return RedirectToAction(nameof(Details), new { id = os.Id });
         }
 
-        // GET: OrdemServico/Details/5 (Visualização do Laudo)
+        // GET: OrdemServico/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();

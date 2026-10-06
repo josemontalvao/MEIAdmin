@@ -1,10 +1,26 @@
 @model MEIAdmin.Models.OrdemServico
 
 @{
+    Layout = null;
     ViewData["Title"] = $"Laudo Técnico O.S. #{Model.Id}";
-    string caminhoFisicoAssinatura = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "os", $"assinatura_{Model.Id}.png");
-    bool temAssinaturaDigital = System.IO.File.Exists(caminhoFisicoAssinatura);
 }
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laudo Técnico O.S. #@Model.Id</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <style>
+        @@media print {
+            .d-print-none { display: none !important; }
+            body { background: white !important; padding: 0 !important; }
+            .card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-light">
 
 <div class="container mt-3 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3 d-print-none">
@@ -15,12 +31,12 @@
     </div>
 
     <!-- FOLHA TIMBRADA OFICIAL DA SMART CONTROL -->
-    <div class="card p-4 shadow-sm border border-secondary" id="folhaLaudo">
+    <div class="card p-4 shadow-sm border border-secondary bg-white" id="folhaLaudo">
         
         <!-- CABEÇALHO -->
         <div class="row align-items-center pb-3 border-bottom border-2 border-primary">
             <div class="col-3 text-center">
-                <img src="~/img/logo.png" alt="Smart Control" style="max-height: 90px;" onerror="this.style.display='none'" />
+                <img src="/img/logo.png" alt="Smart Control" style="max-height: 90px;" onerror="this.style.display='none'" />
             </div>
             <div class="col-9">
                 <h4 class="fw-bold text-primary mb-1">SMART CONTROL SYSTEMAS LTDA</h4>
@@ -33,7 +49,7 @@
             </div>
         </div>
 
-        <!-- QUADRO DO CLIENTE E O.S. (COM TÉCNICO NO TOPO!) -->
+        <!-- QUADRO DO CLIENTE E O.S. -->
         <div class="row bg-light p-3 my-3 rounded border align-items-center">
             <div class="col-md-6">
                 <h6 class="mb-1"><strong>CLIENTE:</strong> @(Model.Cliente?.RazaoSocial ?? "N/A")</h6>
@@ -47,7 +63,6 @@
                 <p class="mb-0" style="font-size: 0.88rem; line-height: 1.4;">
                     <strong>Emissão:</strong> @Model.DataAbertura.ToString("dd/MM/yyyy")<br/>
                     <strong>Tipo:</strong> @Model.TipoManutencao | <strong>Status:</strong> <span class="badge bg-success">@Model.Status</span><br/>
-                    <!-- TÉCNICO DE CAMPO CREDITADO NO TOPO -->
                     <strong>Técnico Responsável:</strong> <span class="text-dark fw-bold">@(Model.Colaborador?.Nome ?? "Não informado")</span>
                 </p>
             </div>
@@ -101,25 +116,23 @@
             </div>
         }
 
-        <!-- DUPLA ASSINATURA EXECUTIVA -->
+        <!-- DUPLA ASSINATURA -->
         <div class="mt-4 pt-3 border-top">
             <p class="text-center text-muted fst-italic" style="font-size: 0.8rem;">
                 Declaro que os serviços e manutenções descritos nesta Ordem de Serviço foram executados e testados a contento.
             </p>
             <div class="row text-center mt-4 align-items-end">
-                <!-- ASSINATURA DA DIRETORIA EXECUTIVA -->
                 <div class="col-6">
                     <p class="mb-0">__________________________________________</p>
                     <p class="mb-0 fw-bold">José Antônio da C. Montalvão</p>
                     <small class="text-muted fw-bold">Diretor Executivo</small>
                 </div>
 
-                <!-- ASSINATURA DIGITAL DO CLIENTE -->
                 <div class="col-6">
-                    @if (temAssinaturaDigital)
+                    @if (!string.IsNullOrEmpty(Model.AssinaturaClienteBase64))
                     {
                         <div class="mb-1">
-                            <img src="/uploads/os/assinatura_@(Model.Id).png" style="max-height: 75px; max-width: 250px;" alt="Assinatura Digital" />
+                            <img src="@Model.AssinaturaClienteBase64" style="max-height: 75px; max-width: 250px;" alt="Assinatura Digital" />
                         </div>
                     }
                     else
@@ -138,3 +151,6 @@
         </div>
     </div>
 </div>
+
+</body>
+</html>

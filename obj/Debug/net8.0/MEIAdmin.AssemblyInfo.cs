@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MEIAdmin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+45ee97922e3180a936b61c29defeba1103e3b421")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ab9f3318908793a7db0200adafadc86034c5ccb")]
 [assembly: System.Reflection.AssemblyProductAttribute("MEIAdmin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MEIAdmin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

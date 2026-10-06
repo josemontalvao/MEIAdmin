@@ -10,7 +10,6 @@ namespace MEIAdmin.Models
         [Key]
         public int Id { get; set; }
 
-        // --- 1. DADOS DE DESPACHO (PREENCHIDOS POR VOCÊ NA CENTRAL) ---
         [Required(ErrorMessage = "A data de abertura é obrigatória.")]
         [DataType(DataType.Date)]
         public DateTime DataAbertura { get; set; } = DateTime.Today;
@@ -22,36 +21,37 @@ namespace MEIAdmin.Models
 
         [ForeignKey("Colaborador")]
         public int? ColaboradorId { get; set; }
-        public Colaborador? Colaborador { get; set; } // O Técnico Responsável
+        public Colaborador? Colaborador { get; set; }
 
         [StringLength(50)]
-        public string TipoManutencao { get; set; } = "Preventiva"; // Preventiva, Corretiva, Instalação
+        public string TipoManutencao { get; set; } = "Preventiva";
 
         [Required(ErrorMessage = "Descreva a instrução do serviço.")]
         [StringLength(500)]
-        public string DescricaoProblema { get; set; } = string.Empty; // O que o técnico deve fazer
+        public string DescricaoProblema { get; set; } = string.Empty;
 
-        public string Status { get; set; } = "Pendente"; // Pendente, Em Andamento, Concluída, Cancelada
+        public string Status { get; set; } = "Pendente";
 
-        // --- 2. EXECUÇÃO EM CAMPO (PREENCHIDO PELO TÉCNICO NO CELULAR) ---
         [DataType(DataType.DateTime)]
         public DateTime? DataInicio { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime? DataFim { get; set; }
 
-        public string? ServicoExecutado { get; set; } // O que o técnico realmente fez
-        public string? PecasUtilizadas { get; set; }  // Cabos, conectores, fontes, etc.
+        public string? ServicoExecutado { get; set; }
+        public string? PecasUtilizadas { get; set; }
         public string? ObservacoesTecnicas { get; set; }
 
         [Column(TypeName = "decimal(5,2)")]
         public decimal? TempoGastoHoras { get; set; }
 
-        // --- 3. EVIDÊNCIAS FOTOGRÁFICAS COM LEGENDAS ---
+        // CAMPO BLINDADO: A assinatura fica gravada direto no banco de dados da Hostinger!
+        [Column(TypeName = "longtext")]
+        public string? AssinaturaClienteBase64 { get; set; }
+
         public List<FotoOrdemServico> Fotos { get; set; } = new List<FotoOrdemServico>();
     }
 
-    // Tabela filha para guardar as fotos tiradas pelo celular e a legenda de cada uma
     public class FotoOrdemServico
     {
         [Key]
@@ -61,10 +61,12 @@ namespace MEIAdmin.Models
         public int OrdemServicoId { get; set; }
         public OrdemServico? OrdemServico { get; set; }
 
+        // CAMPO BLINDADO: A foto fica gravada direto no banco de dados da Hostinger!
         [Required]
-        public string CaminhoArquivo { get; set; } = string.Empty; // Caminho da foto no servidor
+        [Column(TypeName = "longtext")]
+        public string CaminhoArquivo { get; set; } = string.Empty;
 
         [StringLength(200)]
-        public string? Legenda { get; set; } // A legenda da foto digitada pelo técnico
+        public string? Legenda { get; set; }
     }
 }
