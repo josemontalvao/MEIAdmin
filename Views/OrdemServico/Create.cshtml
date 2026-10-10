@@ -32,13 +32,15 @@
                     </div>
                 </div>
 
-                <!-- TIPO E DATA DE ABERTURA -->
+                <!-- TIPO DE SERVIÇO E DATA DE ABERTURA -->
                 <div class="row">
                     <div class="col-md-6 form-group mb-3">
                         <label asp-for="TipoManutencao" class="form-label fw-bold">Tipo de Serviço</label>
                         <select asp-for="TipoManutencao" class="form-select">
-                            <option value="Preventiva">Preventiva (Contrato / Revisão)</option>
+                            <!-- OPÇÃO NOVA DE VISTORIA / LEVANTAMENTO -->
+                            <option value="Vistoria / Orçamento">🔍 Vistoria / Levantamento de Orçamento</option>
                             <option value="Corretiva">Corretiva (Reparo / Defeito)</option>
+                            <option value="Preventiva">Preventiva (Contrato / Revisão)</option>
                             <option value="Instalação">Nova Instalação</option>
                         </select>
                     </div>
@@ -52,8 +54,8 @@
 
                 <!-- INSTRUÇÕES PARA O TÉCNICO -->
                 <div class="form-group mb-4">
-                    <label asp-for="DescricaoProblema" class="form-label fw-bold">Instruções / Defeito Relatado (O que fazer no cliente)</label>
-                    <textarea asp-for="DescricaoProblema" class="form-control" rows="4" placeholder="Ex: Câmera do portão sem sinal. Verificar fonte 12V, conectores BNC e testar cabeamento." required></textarea>
+                    <label asp-for="DescricaoProblema" class="form-label fw-bold">Instruções / O que fazer no cliente</label>
+                    <textarea asp-for="DescricaoProblema" class="form-control" rows="4" placeholder="Ex: Fazer vistoria em todos os ares-condicionados do Bloco B e levantar lista de peças necessárias para reparo." required></textarea>
                     <span asp-validation-for="DescricaoProblema" class="text-danger"></span>
                 </div>
 

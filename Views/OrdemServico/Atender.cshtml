@@ -1,7 +1,7 @@
 @model MEIAdmin.Models.OrdemServico
 
 @{
-    Layout = null; // TIRA A TRAVA DO ADMIN PARA O TÉCNICO ABRIR NO CELULAR!
+    Layout = null;
     ViewData["Title"] = $"Atendimento O.S. #{Model.Id}";
 }
 
@@ -69,26 +69,65 @@
 
                     <!-- DESCRIÇÃO DO SERVIÇO FEITO -->
                     <div class="form-group mb-3">
-                        <label class="form-label fw-bold small">Descrição dos Serviços Executados:</label>
-                        <textarea name="servicoExecutado" class="form-control" rows="3" placeholder="Descreva o que foi inspecionado, testado ou reparado..." required>@Model.ServicoExecutado</textarea>
+                        <label class="form-label fw-bold small">Descrição dos Serviços / Diagnóstico da Vistoria:</label>
+                        <textarea name="servicoExecutado" class="form-control" rows="3" placeholder="Descreva o que foi inspecionado, testado ou o diagnóstico da vistoria..." required>@Model.ServicoExecutado</textarea>
                     </div>
 
-                    <!-- PEÇAS E MATERIAIS GASTOS -->
-                    <div class="form-group mb-3">
-                        <label class="form-label fw-bold small">Peças e Materiais Utilizados do Estoque:</label>
-                        <textarea name="pecasUtilizadas" class="form-control" rows="2" placeholder="Ex: 1 Fonte 12V 2A, 2 Conectores BNC, 10m de Cabo...">@Model.PecasUtilizadas</textarea>
+                    <!-- BLOCO NOVO E INTELIGENTE: LEVANTAMENTO DE MATERIAIS PARA COMPRA / REPOSIÇÃO -->
+                    <div class="card bg-light p-3 border-primary mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold text-primary mb-0">🛒 Peças e Materiais Necessários (Compras / Reposição)</h6>
+                            <button type="button" class="btn btn-sm btn-primary fw-bold" onclick="adicionarMaterial()">
+                                ➕ Adicionar Material
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mb-3" style="font-size: 0.75rem;">
+                            Adicione as peças para cotação/uso. Você pode ajustar a quantidade a qualquer momento nos botões [+] e [-] enquanto caminha pela obra!
+                        </small>
+
+                        <div id="containerMateriais">
+                            <!-- Primeiro item inicial padrão -->
+                            <div class="row material-item mb-2 p-2 bg-white rounded border align-items-center">
+                                <div class="col-md-6 col-12 mb-2 mb-md-0">
+                                    <label class="form-label fw-bold small mb-1">Peça / Material:</label>
+                                    <input type="text" name="matNome" class="form-control form-control-sm" placeholder="Ex: Filtro de ar split 18k, Tubo cobre 1/2..." />
+                                </div>
+                                <div class="col-md-3 col-6 mb-2 mb-md-0">
+                                    <label class="form-label fw-bold small mb-1">Quantidade:</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="alterarQtd(this, -1)">➖</button>
+                                        <input type="number" name="matQtd" class="form-control text-center fw-bold input-qtd" value="1" min="1" />
+                                        <button type="button" class="btn btn-outline-primary" onclick="alterarQtd(this, 1)">➕</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-4 mb-2 mb-md-0">
+                                    <label class="form-label fw-bold small mb-1">Unidade:</label>
+                                    <select name="matUnidade" class="form-select form-select-sm">
+                                        <option value="UN">UN</option>
+                                        <option value="MTS">MTS</option>
+                                        <option value="PC">PC</option>
+                                        <option value="KG">KG</option>
+                                        <option value="CX">CX</option>
+                                        <option value="RL">RL</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 col-2 text-center pt-md-3">
+                                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removerMaterial(this)" title="Remover">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- OBSERVAÇÕES TÉCNICAS -->
                     <div class="form-group mb-3">
                         <label class="form-label fw-bold small">Observações Técnicas / Recomendações:</label>
-                        <textarea name="observacoesTecnicas" class="form-control" rows="2" placeholder="Ex: Sistema testado e 100% operacional...">@Model.ObservacoesTecnicas</textarea>
+                        <textarea name="observacoesTecnicas" class="form-control" rows="2" placeholder="Ex: Aparelho da sala 102 com compressor travado. Demais unidades com carga normal...">@Model.ObservacoesTecnicas</textarea>
                     </div>
 
-                    <!-- EVIDÊNCIAS FOTOGRÁFICAS DINÂMICAS -->
+                    <!-- EVIDÊNCIAS FOTOGRÁFICAS DINÂMICAS (CÂMERA OU GALERIA) -->
                     <div class="card bg-light p-3 border-secondary mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="fw-bold text-primary mb-0 small">📸 Fotos (Câmera do Celular)</h6>
+                            <h6 class="fw-bold text-primary mb-0 small">📸 Fotos (Câmera ou Galeria)</h6>
                             <button type="button" class="btn btn-sm btn-primary" onclick="adicionarFoto()">
                                 ➕ Mais Foto
                             </button>
@@ -98,7 +137,7 @@
                         <div id="containerFotos">
                             <div class="row foto-item mb-2 p-2 bg-white rounded border align-items-center">
                                 <div class="col-md-5 mb-2 mb-md-0">
-                                    <input type="file" name="fotos" class="form-control form-control-sm" accept="image/* />
+                                    <input type="file" name="fotos" class="form-control form-control-sm" accept="image/*" />
                                 </div>
                                 <div class="col-md-6 mb-2 mb-md-0">
                                     <input type="text" name="legendas" class="form-control form-control-sm" placeholder="Legenda da Foto 1..." />
@@ -112,8 +151,8 @@
 
                     <!-- ASSINATURA DIGITAL COM O DEDO NA TELA -->
                     <div class="card bg-light p-3 border-secondary mb-4">
-                        <h6 class="fw-bold text-dark mb-1 small">✍️ Assinatura do Cliente / Responsável</h6>
-                        <small class="text-muted d-block mb-2" style="font-size: 0.75rem;">Peça para o cliente assinar com o dedo no quadro abaixo:</small>
+                        <h6 class="fw-bold text-dark mb-1 small">✍️ Assinatura do Cliente / Responsável no Local</h6>
+                        <small class="text-muted d-block mb-2" style="font-size: 0.75rem;">Peça para o responsável assinar com o dedo no quadro abaixo:</small>
                         
                         <div class="bg-white border rounded text-center p-1 mb-2" style="touch-action: none;">
                             <canvas id="canvasAssinatura" width="450" height="150" style="border: 1px dashed #666; max-width: 100%; height: 150px; background-color: #ffffff; cursor: crosshair;"></canvas>
@@ -129,7 +168,7 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-success btn-lg py-3 fw-bold fs-5 shadow">
-                            ✅ Concluir Atendimento e Assinar
+                            ✅ Concluir Atendimento / Vistoria
                         </button>
                         <a href="/Tecnico/MinhasOS" class="btn btn-outline-secondary">Cancelar</a>
                     </div>
@@ -139,6 +178,59 @@
     </div>
 
     <script>
+        // --- 1. LÓGICA DE QUANTIDADE INTELIGENTE (+ / -) E MATERIAIS DINÂMICOS ---
+        function alterarQtd(botao, delta) {
+            const input = botao.closest('.input-group').querySelector('.input-qtd');
+            let val = parseInt(input.value) || 1;
+            val = Math.max(1, val + delta);
+            input.value = val;
+        }
+
+        function adicionarMaterial() {
+            const container = document.getElementById('containerMateriais');
+            const novaLinha = document.createElement('div');
+            novaLinha.className = 'row material-item mb-2 p-2 bg-white rounded border align-items-center';
+            novaLinha.innerHTML = `
+                <div class="col-md-6 col-12 mb-2 mb-md-0">
+                    <label class="form-label fw-bold small mb-1">Peça / Material:</label>
+                    <input type="text" name="matNome" class="form-control form-control-sm" placeholder="Ex: Filtro de ar, Cabo, Conector..." />
+                </div>
+                <div class="col-md-3 col-6 mb-2 mb-md-0">
+                    <label class="form-label fw-bold small mb-1">Quantidade:</label>
+                    <div class="input-group input-group-sm">
+                        <button type="button" class="btn btn-outline-secondary" onclick="alterarQtd(this, -1)">➖</button>
+                        <input type="number" name="matQtd" class="form-control text-center fw-bold input-qtd" value="1" min="1" />
+                        <button type="button" class="btn btn-outline-primary" onclick="alterarQtd(this, 1)">➕</button>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4 mb-2 mb-md-0">
+                    <label class="form-label fw-bold small mb-1">Unidade:</label>
+                    <select name="matUnidade" class="form-select form-select-sm">
+                        <option value="UN">UN</option>
+                        <option value="MTS">MTS</option>
+                        <option value="PC">PC</option>
+                        <option value="KG">KG</option>
+                        <option value="CX">CX</option>
+                        <option value="RL">RL</option>
+                    </select>
+                </div>
+                <div class="col-md-1 col-2 text-center pt-md-3">
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removerMaterial(this)" title="Remover">🗑️</button>
+                </div>
+            `;
+            container.appendChild(novaLinha);
+        }
+
+        function removerMaterial(botao) {
+            const itens = document.querySelectorAll('.material-item');
+            if (itens.length > 1) {
+                botao.closest('.material-item').remove();
+            } else {
+                alert("Mantenha pelo menos um espaço de material.");
+            }
+        }
+
+        // --- 2. LÓGICA DE FOTOS DINÂMICAS ILIMITADAS ---
         let contadorFoto = 1;
         function adicionarFoto() {
             contadorFoto++;
@@ -147,7 +239,7 @@
             novaLinha.className = 'row foto-item mb-2 p-2 bg-white rounded border align-items-center';
             novaLinha.innerHTML = `
                 <div class="col-md-5 mb-2 mb-md-0">
-                    <input type="file" name="fotos" class="form-control form-control-sm" accept="image/* />
+                    <input type="file" name="fotos" class="form-control form-control-sm" accept="image/*" />
                 </div>
                 <div class="col-md-6 mb-2 mb-md-0">
                     <input type="text" name="legendas" class="form-control form-control-sm" placeholder="Legenda da Foto ${contadorFoto}..." />
@@ -168,7 +260,7 @@
             }
         }
 
-        // Canvas de Assinatura com Touch
+        // --- 3. LÓGICA DE ASSINATURA TOUCH ---
         const canvas = document.getElementById('canvasAssinatura');
         const ctx = canvas.getContext('2d');
         let desenhando = false;

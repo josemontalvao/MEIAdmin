@@ -42,7 +42,7 @@
     <!-- FOLHA TIMBRADA OFICIAL DA SMART CONTROL -->
     <div class="card p-4 shadow-sm border border-secondary bg-white" id="folhaLaudo">
         
-        <!-- CABEÇALHO COM LOGO MAIOR E IMPONENTE -->
+        <!-- CABEÇALHO COM LOGO MAIOR -->
         <div class="row align-items-center pb-3 border-bottom border-2 border-primary">
             <div class="col-3 text-center">
                 <img src="/img/logo.png" alt="Smart Control" style="max-height: 165px; max-width: 100%; object-fit: contain;" onerror="this.style.display='none'" />
@@ -86,15 +86,16 @@
             </p>
             
             <div class="mt-2">
-                <h6 class="fw-bold text-dark mb-1">Descrição dos Serviços Executados:</h6>
+                <h6 class="fw-bold text-dark mb-1">Descrição dos Serviços / Diagnóstico da Vistoria:</h6>
                 <div class="p-2 bg-light rounded border" style="font-size: 0.95rem;">
                     @(Model.ServicoExecutado ?? "Nenhum detalhe informado.")
                 </div>
             </div>
 
+            <!-- LEVANTAMENTO DE MATERIAIS PARA COMPRA / COTAÇÃO -->
             <div class="mt-2">
-                <h6 class="fw-bold text-dark mb-1">Peças e Materiais Utilizados / Substituídos:</h6>
-                <div class="p-2 bg-light rounded border" style="font-size: 0.95rem;">
+                <h6 class="fw-bold text-primary mb-1">🛒 Peças, Materiais Utilizados / Levantamento para Compra:</h6>
+                <div class="p-2 bg-light rounded border fw-bold text-dark" style="font-size: 0.95rem; white-space: pre-line;">
                     @(Model.PecasUtilizadas ?? "Nenhum material registrado.")
                 </div>
             </div>
@@ -107,7 +108,7 @@
             </div>
         </div>
 
-        <!-- REGISTRO FOTOGRÁFICO DE EVIDÊNCIAS (INTEIRAS E SEM CORTE!) -->
+        <!-- REGISTRO FOTOGRÁFICO DE EVIDÊNCIAS -->
         @if (Model.Fotos != null && Model.Fotos.Any())
         {
             <div class="mt-3">
@@ -117,7 +118,6 @@
                     {
                         var foto = Model.Fotos[i];
                         <div class="col-6 mb-3 text-center">
-                            <!-- MOLDURA QUE MOSTRA A FOTO 100% INTEIRA SEM CORTAR -->
                             <div class="foto-box rounded border shadow-sm p-1">
                                 <img src="@foto.CaminhoArquivo" alt="Foto @(i + 1)" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
                             </div>

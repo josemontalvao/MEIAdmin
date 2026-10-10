@@ -80,10 +80,10 @@ namespace MEIAdmin.Controllers
             return View(os);
         }
 
-        // POST: OrdemServico/Atender/5 (GRAVA FOTOS E ASSINATURA DIRETO NO BANCO DE DADOS!)
+        // POST: OrdemServico/Atender/5 (RECEBE LISTA DINÂMICA DE MATERIAIS)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Atender(int id, DateTime dataInicio, DateTime dataFim, string servicoExecutado, string pecasUtilizadas, string observacoesTecnicas, List<IFormFile> fotos, List<string> legendas, string? assinaturaBase64)
+        public async Task<IActionResult> Atender(int id, DateTime dataInicio, DateTime dataFim, string servicoExecutado, string observacoesTecnicas, List<IFormFile> fotos, List<string> legendas, string? assinaturaBase64, List<string>? matNome, List<int>? matQtd, List<string>? matUnidade)
         {
             var os = await _context.OrdensServico.Include(o => o.Fotos).FirstOrDefaultAsync(o => o.Id == id);
             if (os == null) return NotFound();
@@ -95,17 +95,40 @@ namespace MEIAdmin.Controllers
             os.DataFim = dataFim;
             os.TempoGastoHoras = tempo;
             os.ServicoExecutado = servicoExecutado;
-            os.PecasUtilizadas = pecasUtilizadas;
             os.ObservacoesTecnicas = observacoesTecnicas;
             os.Status = "Concluída";
 
-            // 1. Grava a Assinatura Digital DIRETO no banco de dados
+            // 1. Organiza a lista dinâmica de materiais e quantidades
+            if (matNome != null && matNome.Count > 0)
+            {
+                var listaFormatada = new List<string>();
+                for (int i = 0; i < matNome.Count; i++)
+                {
+                    string nome = matNome[i]?.Trim() ?? "";
+                    if (!string.IsNullOrEmpty(nome))
+                    {
+                        int qtd = (matQtd != null && i < matQtd.Count && matQtd[i] > 0) ? matQtd[i] : 1;
+                        string unid = (matUnidade != null && i < matUnidade.Count) ? matUnidade[i] : "UN";
+                        listaFormatada.Add($"• {qtd} {unid} - {nome}");
+                    }
+                }
+
+                os.PecasUtilizadas = listaFormatada.Count > 0 
+                    ? string.Join("\n", listaFormatada) 
+                    : "Nenhum material registrado.";
+            }
+            else
+            {
+                os.PecasUtilizadas = "Nenhum material registrado.";
+            }
+
+            // 2. Grava a Assinatura Digital no banco
             if (!string.IsNullOrWhiteSpace(assinaturaBase64))
             {
                 os.AssinaturaClienteBase64 = assinaturaBase64;
             }
 
-            // 2. Grava as Fotos DIRETO no banco de dados (em formato Base64)
+            // 3. Grava as Fotos no banco
             if (fotos != null && fotos.Count > 0)
             {
                 for (int i = 0; i < fotos.Count; i++)
@@ -127,7 +150,7 @@ namespace MEIAdmin.Controllers
                             _context.FotosOrdemServico.Add(new FotoOrdemServico
                             {
                                 OrdemServicoId = id,
-                                CaminhoArquivo = fotoBase64, // FOTO GUARDADA NO BANCO!
+                                CaminhoArquivo = fotoBase64,
                                 Legenda = legenda
                             });
                         }
