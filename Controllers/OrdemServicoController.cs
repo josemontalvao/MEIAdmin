@@ -83,7 +83,7 @@ namespace MEIAdmin.Controllers
         // POST: OrdemServico/Atender/5 (RECEBE LISTA DINÂMICA DE MATERIAIS)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Atender(int id, DateTime dataInicio, DateTime dataFim, string servicoExecutado, string observacoesTecnicas, List<IFormFile> fotos, List<string> legendas, string? assinaturaBase64, List<string>? matNome, List<int>? matQtd, List<string>? matUnidade)
+        public async Task<IActionResult> Atender(int id, DateTime dataInicio, DateTime dataFim, string servicoExecutado, string observacoesTecnicas, string pecasUtilizadas,List<IFormFile> fotos, List<string> legendas, string? assinaturaBase64, List<string>? matNome, List<int>? matQtd, List<string>? matUnidade)
         {
             var os = await _context.OrdensServico.Include(o => o.Fotos).FirstOrDefaultAsync(o => o.Id == id);
             if (os == null) return NotFound();
@@ -113,9 +113,9 @@ namespace MEIAdmin.Controllers
                     }
                 }
 
-                os.PecasUtilizadas = listaFormatada.Count > 0 
-                    ? string.Join("\n", listaFormatada) 
-                    : "Nenhum material registrado.";
+                os.PecasUtilizadas = !string.IsNullOrWhiteSpace(pecasUtilizadas) 
+                ? pecasUtilizadas 
+                : "Nenhum material registrado.";
             }
             else
             {

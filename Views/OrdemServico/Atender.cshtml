@@ -54,6 +54,7 @@
                 <form id="formAtendimento" asp-action="Atender" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="assinaturaBase64" id="inputAssinaturaBase64" />
+                    <input type="hidden" name="pecasUtilizadas" id="inputPecasUtilizadas" />
 
                     <!-- DATAS E HORAS -->
                     <div class="row">
@@ -319,8 +320,30 @@
         }
 
         document.getElementById('formAtendimento').addEventListener('submit', function (e) {
+            // 1. Empacota a assinatura digital
             if (temAssinatura) {
                 document.getElementById('inputAssinaturaBase64').value = canvas.toDataURL('image/png');
+            }
+
+            // 2. Empacota TODOS os materiais e quantidades sem perder nenhum!
+            const listaItens = [];
+            document.querySelectorAll('.material-item').forEach(function(linha) {
+                const inputNome = linha.querySelector('input[name="matNome"]');
+                const inputQtd = linha.querySelector('.input-qtd');
+                const selectUnid = linha.querySelector('select[name="matUnidade"]');
+
+                if (inputNome && inputNome.value.trim() !== '') {
+                    const nome = inputNome.value.trim();
+                    const qtd = inputQtd ? inputQtd.value : '1';
+                    const unid = selectUnid ? selectUnid.value : 'UN';
+                    listaItens.push(`• ${qtd} ${unid} - ${nome}`);
+                }
+            });
+
+            if (listaItens.length > 0) {
+                document.getElementById('inputPecasUtilizadas').value = listaItens.join('\n');
+            } else {
+                document.getElementById('inputPecasUtilizadas').value = "Nenhum material registrado.";
             }
         });
     </script>
